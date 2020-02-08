@@ -12,6 +12,14 @@ fu! leetcode#lang#utils#langIsSupported(lang)
   en
 endfu
 
+fu! leetcode#lang#utils#commentDependencies()
+  exe 'cal leetcode#lang#' .g:leetcode_lang .'#commentDependencies()'
+endfu
+
+fu! leetcode#lang#utils#uncommentDependencies()
+  exe 'cal leetcode#lang#' .g:leetcode_lang .'#uncommentDependencies()'
+endfu
+
 fu! leetcode#lang#utils#addDependencies()
   exe 'cal leetcode#lang#' .g:leetcode_lang .'#addDependencies()'
 endfu

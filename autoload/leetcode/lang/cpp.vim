@@ -45,3 +45,11 @@ endfu
 fu! leetcode#lang#cpp#goToWhereCodeBegins()
   sil /\m\%$/ | exe 'sil ' .s:code_begin_location
 endfu
+
+fu! leetcode#lang#cpp#commentDependencies()
+  exe '%sm@\C^\(.*' .s:dependencies[1] .'.*\)$@//\1@'
+endfu
+
+fu! leetcode#lang#cpp#uncommentDependencies()
+  exe '%sm@\C\s*\zs/*\ze.*' .s:dependencies[1] .'.*$@@'
+endfu
