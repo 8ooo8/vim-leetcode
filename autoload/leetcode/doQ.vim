@@ -2,13 +2,12 @@
 "" @param   a:1 Question ID or Name
 ""          a:2 Optional code filename
 fu! leetcode#doQ#doQ(...) 
-  "" TO-DO: MOVE THE ERROR MSG TO "PLUGIN/LEETCODE.VIM"???
-  if !leetcode#lang#utils#langIsSupported(g:leetcode_lang)
-    echoe '[' .g:leetcode_name .'] The language specified by "g:leetcode_lang" is not supported.'
-    retu -1
-  endif
   if a:0 < 1 || a:0 > 2
     echoe '[' .g:leetcode_name .'] :LdoQ {Question ID or Name} [code filename]'
+    retu -1
+  endif
+  if !leetcode#lang#utils#langIsSupported(g:leetcode_lang)
+    echoe '[' .g:leetcode_name .'] The language specified by "g:leetcode_lang" is not supported.'
     retu -2
   endif
 

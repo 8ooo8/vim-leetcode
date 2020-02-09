@@ -19,8 +19,6 @@ if has('win32unix') || has('win16') || has('win32') || has('win64')
 en
 "if exists('g:loaded_leetcode') && g:loaded_leetcode | fini | en
 "let g:loaded_leetcode = 1
-exe 'set rtp^=' .substitute(expand('%:p:h:h'), '\([ \[]\)', '\\\1', 'g')
-
 
 "" Set Default Values {{{1
 if !exists('g:leetcode_lang') | let g:leetcode_lang = 'cpp' | en
@@ -32,11 +30,11 @@ if !exists('g:leetcode_autoinsert') | let g:leetcode_autoinsert = 1 | en
 cal leetcode#utils#path#init()
 
 "" API {{{1
-"" TO-DO: ALLOW MULTIPLE SOLUTIONS TO A SINGLE QUESTION
-com! -nargs=1 LdoQ cal leetcode#doQ(<f-args>)
+com! -nargs=* LdoQ cal leetcode#doQ#doQ(<f-args>)
+com! -nargs=* Ltest cal leetcode#testCode#testCode(<q-args>)
+com! -nargs=* Lsubmit cal leetcode#submitCode#submitCode(<f-args>)
+"" TO-DO: DO LAST QUESTION IF Q ID OR NAME NOT GIVEN
 "" TO-DO: LOCAL TEST
-"" TO-DO: NICER VIEW OF TESTCODE AND SUBMITCODE
-com! -nargs=? Ltest cal leetcode#testCode(<q-args>)
-com! Lsubmit cal leetcode#submitCode()
+"" TO-DO: RENAME CODE FILE
 "" TO-DO: SIGN IN
 "" TO-DO: SHOW QUESTIONS
