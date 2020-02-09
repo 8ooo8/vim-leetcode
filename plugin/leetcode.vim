@@ -25,6 +25,7 @@ exe 'set rtp^=' .substitute(expand('%:p:h:h'), '\([ \[]\)', '\\\1', 'g')
 "" Set Default Values {{{1
 if !exists('g:leetcode_lang') | let g:leetcode_lang = 'cpp' | en
 if !exists('g:leetcode_viewQ') | let g:leetcode_viewQ = 1 | en
+if !exists('g:leetcode_autoinsert') | let g:leetcode_autoinsert = 1 | en
 "" "g:leetcode_root_dir": if it does not exist, pwd will be used
 
 "" Initialize {{{1
