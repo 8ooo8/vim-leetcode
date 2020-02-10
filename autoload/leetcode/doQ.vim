@@ -15,7 +15,7 @@ fu! leetcode#doQ#doQ(...)
   let root_path = leetcode#utils#path#getRootDir()
   let Q_fullname = s:getQFullName(a:1)
   if Q_fullname == -1
-    echoe '[' .g:leetcode_name .'] Error in retriving the full name of the question.'
+    echoe '[' .g:leetcode_name .'] Error in retriving the question. Please make sure the question ID or name is correct.'
     retu -3
   endif
   let destination_dir_path = root_path .g:leetcode_path_delimit .Q_fullname
@@ -26,7 +26,7 @@ fu! leetcode#doQ#doQ(...)
     try
       exe 'sil !mkdir -p "' .destination_dir_path .'"'
       exe 'lcd ' .destination_dir_path
-      exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' ' .a:1 .' > ' .Q_filename
+      exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .a:1 .'" > ' .Q_filename
     cat /*/
       echoe '[' .g:leetcode_name .'] Error in creating the question and code file. '
       retu -4
@@ -95,7 +95,7 @@ fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filen
     try
       exe 'norm! `.' 
     "" when it is an unchanged file, e.g. a copy of the old code file
-    cat /E20/ | cal leetcode#lang#utils#goToWhereCodeBegins()
+    cat /E20\|E19/ | cal leetcode#lang#utils#goToWhereCodeBegins()
     endt
   el
     cal leetcode#lang#utils#goToWhereCodeBegins()
@@ -111,7 +111,7 @@ fu! s:getQFullName(Q_ID_or_name)
   "" Ensure it is under a valid directory so that
   "" the "leetcode-cli' commands may function properly
   exe 'lcd ' .g:leetcode_valid_dir_path
-  let Q = system('leetcode show ' .a:Q_ID_or_name)
+  let Q = system('leetcode show "' .a:Q_ID_or_name .'"')
   let Q_in_list_form = split(Q, '\n')
   for q in Q_in_list_form
     if q =~ '^\s*\[\d\+\][- \tA-Za-z0-9\[\]()]\+$'
