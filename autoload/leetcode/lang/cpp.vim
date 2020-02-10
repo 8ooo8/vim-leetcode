@@ -18,38 +18,44 @@ let s:depend_location = '/\mclass\s\+solution\c\s\+{/-'
 let s:code_begin_location = '?\m)\s*{?+'
 
 fu! leetcode#lang#cpp#addDependencies()
-  norm! gg   
-  try | exe 'sil ' .s:depend_location
+  keepj norm! gg   
+  try | exe 'keepp sil ' .s:depend_location
   cat /E486/ 
-    echoe '[' .g:leetcode_name .'] ' .'Error in locating the position to add dependencies'
+    echoe '[' .g:leetcode_name .'] Error in locating the position to add dependencies'
+    retu -1
   endt
-  cal append(line('.'), s:dependencies)
+  "" Add dependencies and make it non-undoable
+  let old_ul = &ul
+  setlocal ul=-1
+  keepj cal append(line('.'), s:dependencies)
+  exe 'setlocal ul='.old_ul
+  retu 0
 endfu
 
-"" SUBJECT TO REVISE FOR A HIGHER SEARCH ACCURACY.
 fu! leetcode#lang#cpp#foldDependencies()
   set foldmethod=manual
   try 
-    norm! gg
+    keepj norm! gg
     let first_fold_line = search(escape(s:dependencies[0], '/*[]'))
     if foldclosed(first_fold_line) == -1
-      exe 'sil /\m\C\s*\/\{-,2}\s*' .s:dependencies[2] .'\s*$'
+      exe 'keepj keepp sil /\m\C\s*\/\{-,2}\s*' .s:dependencies[2] .'\s*$'
       let last_fold_line = searchpair('\C\s*#ifdef\>', '', '\C\s*endif\>', 'W')
-      exe 'norm! ' .first_fold_line .'G' .(last_fold_line - first_fold_line + 1) .'zF'
+      exe 'keepj norm! ' .first_fold_line .'G' .(last_fold_line - first_fold_line + 1) .'zF'
     en
   cat /E486/
-    echoe '[' .g:leetcode_name .']' .'Error in locating the dependencies to fold'
+    echoe '[' .g:leetcode_name .'] Error in locating the dependencies to fold'
   endt
 endfu
 
 fu! leetcode#lang#cpp#goToWhereCodeBegins()
-  sil /\m\%$/ | exe 'sil ' .s:code_begin_location
+  keepj keepp sil /\m\%$/
+  exe 'sil ' .s:code_begin_location
 endfu
 
 fu! leetcode#lang#cpp#commentDependencies()
-  exe '%sm@\C^\(.*' .s:dependencies[1] .'.*\)$@//\1@'
+  exe 'keepj keepp sil %sm@\C^\(.*' .s:dependencies[1] .'.*\)$@//\1@'
 endfu
 
 fu! leetcode#lang#cpp#uncommentDependencies()
-  exe '%sm@\C\s*\zs/*\ze.*' .s:dependencies[1] .'.*$@@'
+  exe 'keepj keepp sil %sm@\C\s*\zs/*\ze.*' .s:dependencies[1] .'.*$@@'
 endfu

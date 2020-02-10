@@ -9,27 +9,39 @@ endfu
 
 fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   let error = 0
-  let current_line = line('.')
   sil w
   "" Commenting the dependencies to avoid a compilation error during a test or
   "" submission of the current code file
+  let current_line = line('.')
+  exe 'sil wundo! ' .leetcode#utils#path#escape(s:undo_history_filepath)
   cal leetcode#lang#utils#commentDependencies()
   try 
     echoh None | ec '[' .g:leetcode_name .'] Loading ...'
     let test_result = system(a:leetcode_cmd)
     redraw | cal s:displayTestOrSubmitResult(test_result) 
-  "" cat /.*/
-  ""   echoe '[' .g:leetcode_name .'] Error in code judgement.'
-  ""   error = -1
+  cat /.*/
+    echoe '[' .g:leetcode_name .'] Error in code judgement.'
+    error = -1
   finally
     cal leetcode#lang#utils#uncommentDependencies()
-    exe 'norm! ' .current_line .'G'
+    try
+      exe 'sil rundo ' .leetcode#utils#path#escape(s:undo_history_filepath)
+    cat /E822/ ""when empty undo history
+      let old_ul = &ul
+      setl ul=-1
+      exe "norm! a \<BS>\<Esc>"
+      exe 'setl ul=' .old_ul
+    endt 
+    exe 'sil !rm "' .s:undo_history_filepath .'"'
+    cal leetcode#lang#utils#foldDependencies()
+    exe 'keepj norm! ' .current_line .'G'
     retu error
   endt
 endfu
 
 
 "" Local Var & Functions {{{1
+let s:undo_history_filepath = substitute(expand('<sfile>:p'), '.vim$', '', '') .'_undohistory'
 fu! s:displayTestOrSubmitResult(result)
   "" Sample output 1 of the test command of 'leetcode-cli' in list form
   "" ['- Downloading valid-number', '- Sending code to judge', '- Waiting for judge result', 
@@ -132,7 +144,7 @@ fu! s:displayTestOrSubmitResult(result)
           echoh WarningMsg
         el
           echoh None
-        en
+         en
       el | echon chop
       en
     endwhile
