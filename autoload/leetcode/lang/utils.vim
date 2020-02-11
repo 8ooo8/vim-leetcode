@@ -1,8 +1,8 @@
-let s:lang_dir = expand('<sfile>:p:h')
-let s:this_script_name = expand('<sfile>:t')
-let s:langs = split(globpath(s:lang_dir, '*.vim'), '\n')
-cal filter(s:langs, 'v:val !~ "\' .g:leetcode_path_delimit .s:this_script_name .'"')
+let s:lang_dir_path = expand('<sfile>:p:h')
+let s:this_script_name = substitute(expand('<sfile>:t'), '.vim$', '', '')
+let s:langs = split(globpath(fnameescape(s:lang_dir), '*.vim'), '\n')
 cal map(s:langs, {key, val -> substitute(val, '.*\' .g:leetcode_path_delimit .'\(.\{-}\)\.vim$', '\1', 'g')})
+cal filter(s:langs, 'v:val != ''' .s:this_script_name .'''')
 
 fu! leetcode#lang#utils#langIsSupported(lang)
   if index(s:langs, a:lang) >= 0
