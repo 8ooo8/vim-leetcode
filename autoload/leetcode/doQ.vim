@@ -75,7 +75,8 @@ fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filen
   endt
 
   if g:leetcode_viewQ
-    exe 'sil vs ' .leetcode#utils#path#escape(a:Q_filepath)
+    vs
+    exe 'sil e' .leetcode#utils#path#escape(a:Q_filepath)
     if !a:did_this_Q | cal s:RemoveHTMLTagsInCurrentQFile() | sil w | en
     exe 'lcd ' .leetcode#utils#path#escape(a:destination_dir_path)
     1wincmd w
