@@ -13,11 +13,18 @@ fu! leetcode#doQ#doQ(...)
 
   "" Initialize the names & paths of the question and code files
   let root_path = leetcode#utils#path#getRootDir()
-  let Q_fullname = s:getQFullName(a:1)
-  if Q_fullname == -1
-    echoe '[' .g:leetcode_name .'] Error in retriving the question. Please make sure the question ID or name is correct.'
-    retu -3
-  endif
+  let Q_fullname = s:getDidQFullname(a:1)
+  if Q_fullname == 0
+    "" when the specified question does not exist
+    "" TO-DO: LOW PRIORITY. IN A NEW BRANCH,
+    "" SAVE THE QUESTION AT THE SAME TIME SO THAT NO NEED TO REQUEST THE
+    "" LEETCODE SERVER FOR THE QUESTION AGAIN
+    let Q_fullname = s:getQFullNameFromLeetcodeServer(a:1)
+    if Q_fullname == -1
+      echoe '[' .g:leetcode_name .'] Error in retriving the question. Please make sure the question ID or name is correct.'
+      retu -3
+    endif
+  en
   let destination_dir_path = root_path .g:leetcode_path_delimit .Q_fullname
   let did_this_Q = isdirectory(destination_dir_path)
   let Q_filename = 'Q.txt'
@@ -26,7 +33,11 @@ fu! leetcode#doQ#doQ(...)
     try
       exe 'sil !mkdir -p "' .destination_dir_path .'"'
       exe 'lcd ' .destination_dir_path
-      exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .a:1 .'" > ' .Q_filename
+      if a:1 =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
+        exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .matchstr(a:1, '\[\zs\d\+\ze\]') .'" > ' .Q_filename
+      el
+        exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .a:1 .'" > ' .Q_filename
+      en
     cat /*/
       echoe '[' .g:leetcode_name .'] Error in creating the question and code file. '
       retu -4
@@ -49,7 +60,7 @@ fu! leetcode#doQ#doQ(...)
   
   let viewResult = s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
   if viewResult == -1
-    echoe '[' .g:leetcode_name .'] More than one match of code file in the buffer list'
+    echoe '[' .g:leetcode_name .'] More than one match of code file in the buffer list.'
     retu -6
   el
     echom '[' .g:leetcode_name .'] "' .Q_fullname . g:leetcode_path_delimit .code_filename .'" loaded.'
@@ -58,6 +69,55 @@ fu! leetcode#doQ#doQ(...)
 endfu
 
 "" Local Var & Functions {{{1
+fu! s:getDidQFullname(did_Q_partialname)
+  "" a:did_Q_partialname is supposed to be in either one of the following 3 forms:
+  "" (1) "[ID] Name". Partial match.
+  "" (2) "ID". Complete match to avoid the ambiguity problem.
+  "" (3) "Name". Complete match to avoid the ambiguity problem.
+  let root_path = leetcode#utils#path#getRootDir()
+  let all_did_Q = leetcode#utils#accessFiles#allDidQ()
+  if a:did_Q_partialname =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
+    "" when a:did_Q_partialname is in a form of "[ID] Name"
+    let escaped_Q_partialname = escape(a:did_Q_partialname, '[]')
+    for did_Q in all_did_Q
+      if did_Q =~? escaped_Q_partialname
+        retu did_Q
+      endif
+    endfor
+  elseif a:did_Q_partialname =~ '\s*\d\+\s*' 
+    "" when a:did_Q_partialname is in a form of "ID"
+    cal map(all_did_Q, {key, val -> matchstr(val, '\[\zs\d\+\ze\]')})
+    let idx = index(all_did_Q, matchstr(a:did_Q_partialname, '\s*\zs\d\+\ze\s*'))
+    if idx >= 0
+      retu leetcode#utils#accessFiles#allDidQ()[idx]
+    endif
+  el
+    "" when a:did_Q_partialname is in a form of "Name"
+    cal map(all_did_Q, {key, val -> matchstr(val, '\s*\[\d\+\]\s*\zs.*\ze$')})
+    let idx = index(all_did_Q, trim(a:did_Q_partialname))
+    if idx >= 0
+      retu leetcode#utils#accessFiles#allDidQ()[idx]
+    endif
+  en
+  retu 0
+endfu
+
+"" fu! leetcode#utils#accessFiles#allCodeFiles(Q_fullname)
+""   let root_path = leetcode#utils#path#getRootDir()
+""   let code_dir_path = root_path .g:leetcode_path_delimit .a:Q_fullname
+""   let all_code_filenames = split(globpath(fnameescape(code_dir_path), '*' .g:leetcode_lang), '\n')
+""   cal map(all_code_filenames, {key, val -> matchstr(val, g:leetcode_path_delimit .'\zs[^\' .g:leetcode_path_delimit .']*\ze$')})
+""   retu all_code_filenames
+"" endfu
+
+"" fu! leetcode#utils#accessFiles#allDidQ()
+""   let root_path = leetcode#utils#path#getRootDir()
+""   let all_did_Q = split(globpath(root_path, '*' .g:leetcode_path_delimit), '\n')
+""   cal map(all_did_Q, {key, val -> matchstr(val, g:leetcode_path_delimit
+""         \.'\zs[^\' .g:leetcode_path_delimit .']*\ze' .g:leetcode_path_delimit .'$')})
+""   retu all_did_Q
+"" endfu
+
 fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
   exe 'lcd ' .leetcode#utils#path#escape(a:destination_dir_path)
   sil on!
@@ -95,7 +155,7 @@ fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filen
   if a:did_this_Q
     try
       exe 'norm! `.' 
-    "" when it is an unchanged file, e.g. a copy of the old code file
+      "" when it is an unchanged file, e.g. a copy of the old code file
     cat /E20\|E19/ | cal leetcode#lang#utils#goToWhereCodeBegins()
     endt
   el
@@ -108,22 +168,31 @@ fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filen
   retu 0
 endf
 
-fu! s:getQFullName(Q_ID_or_name)
+fu! s:getQFullNameFromLeetcodeServer(Q_ID_or_name)
   "" Ensure it is under a valid directory so that
   "" the "leetcode-cli' commands may function properly
   exe 'lcd ' .g:leetcode_valid_dir_path
-  let Q = system('leetcode show "' .a:Q_ID_or_name .'"')
+  "" When a:Q_ID_or_name is in a form of "[ID] Name", fetch the question by the ID.
+  "" Afterwards, check if a:Q_ID_or_name matches with the fetched question
+  if a:Q_ID_or_name =~ '\[\d\+\]\([ a-zA-Z0-9]\)\+'
+    let Q_ID_or_name = matchstr(a:Q_ID_or_name, '\[\zs\d\+\ze\]')
+  el
+    let Q_ID_or_name = a:Q_ID_or_name
+  endif
+  let Q = system('leetcode show "' .Q_ID_or_name .'"')
   let Q_in_list_form = split(Q, '\n')
-  for q in Q_in_list_form
-    if q =~ '^\s*\[\d\+\][- \tA-Za-z0-9\[\]()]\+$'
-      let Q_fullname = q
+  for line in Q_in_list_form
+    if line =~ '^\s*\[\d\+\][- \tA-Za-z0-9\[\]()]\+$'
+      let Q_fullname = trim(line)
       break
     endif
   endfor
-  if exists('Q_fullname')
-    retu substitute(Q_fullname, '^\s*\|[ \t\n\r]*$', '', 'g')
+  if exists('Q_fullname') && (a:Q_ID_or_name !~ '\[\d\+\]\([ a-zA-Z0-9]\)\+' ||
+        \Q_fullname =~? escape(a:Q_ID_or_name, '[]'))
+    retu Q_fullname
   el
     return -1
+  en
 endfu
 
 fu! s:from_QFullName_to_codeTemplateName(Q_fullname)
