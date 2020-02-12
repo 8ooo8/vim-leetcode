@@ -68,6 +68,23 @@ fu! leetcode#doQ#doQ(...)
   endif
 endfu
 
+fu! leetcode#doQ#completeCmdArgs(arg_lead, cmd_line, cursor_pos)
+  let cmd_and_arg_list = leetcode#utils#cmd#getCmdAndArgList(a:cmd_line)
+  if len(cmd_and_arg_list) == 2
+    ""complete by "the did questions"
+    let did_Q = leetcode#utils#accessFiles#allDidQ()
+    cal map(did_Q, {key, val -> escape(val, ' ')})
+    cal filter(did_Q, {key, val -> val =~? escape(a:arg_lead, '\[]')})
+    retu did_Q
+  elseif len(cmd_and_arg_list) == 3
+    ""complete by "the code files"
+    let code_filenames = leetcode#utils#accessFiles#allCodeFiles(s:getDidQFullname(substitute(cmd_and_arg_list[1], '\\', '', 'g')))
+    cal map(code_filenames, {key, val -> escape(val, ' ')})
+    cal filter(code_filenames, {key, val -> val =~? escape(a:arg_lead, '\[]')})
+    retu code_filenames
+  endif
+endfu
+
 "" Local Var & Functions {{{1
 fu! s:getDidQFullname(did_Q_partialname)
   "" a:did_Q_partialname is supposed to be in either one of the following 3 forms:
