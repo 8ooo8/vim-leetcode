@@ -6,6 +6,8 @@ fu! leetcode#utils#path#init()
     let g:leetcode_path_delimit = '/'
     let g:leetcode_valid_dir_path = '/'
   en
+  let g:leetcode_data_path = g:leetcode_plugin_path .g:leetcode_path_delimit .'data'
+  let g:leetcode_last_down_Q_data_path = g:leetcode_data_path .g:leetcode_path_delimit .'last_down_Q'
 endfu
 
 fu! leetcode#utils#path#escape(path)

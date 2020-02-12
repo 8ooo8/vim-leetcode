@@ -1,6 +1,6 @@
 let s:lang_dir_path = expand('<sfile>:p:h')
 let s:this_script_name = substitute(expand('<sfile>:t'), '.vim$', '', '')
-let s:langs = split(globpath(fnameescape(s:lang_dir), '*.vim'), '\n')
+let s:langs = split(globpath(fnameescape(s:lang_dir_path), '*.vim'), '\n')
 cal map(s:langs, {key, val -> substitute(val, '.*\' .g:leetcode_path_delimit .'\(.\{-}\)\.vim$', '\1', 'g')})
 cal filter(s:langs, 'v:val != ''' .s:this_script_name .'''')
 

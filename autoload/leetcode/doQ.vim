@@ -2,13 +2,21 @@
 "" @param   a:1 Question ID or Name
 ""          a:2 Optional code filename
 fu! leetcode#doQ#doQ(...) 
-  if a:0 < 1 || a:0 > 2
-    echoe '[' .g:leetcode_name .'] :LdoQ {Question ID or Name} [code filename]'
+  if a:0 > 2
+    echoe '[' .g:leetcode_name .'] :LdoQ [Question ID or Name] [code filename]'
     retu -1
   endif
   if !leetcode#lang#utils#langIsSupported(g:leetcode_lang)
     echoe '[' .g:leetcode_name .'] The language specified by "g:leetcode_lang" is not supported.'
     retu -2
+  endif
+
+  if a:0 == 0
+    if s:loadLastDownQ() == -1
+      echoe '[' .g:leetcode_name .'] Error in loading the last downloaded question.'
+      retu -7
+    en
+    retu 0
   endif
 
   "" Initialize the names & paths of the question and code files
@@ -57,6 +65,10 @@ fu! leetcode#doQ#doQ(...)
       endif
   en
   let code_filepath = destination_dir_path .g:leetcode_path_delimit .code_filename
+  if !did_this_Q
+    echom 'write last q info'
+    cal leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
+  en
   
   let viewResult = s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
   if viewResult == -1
@@ -86,6 +98,22 @@ fu! leetcode#doQ#completeCmdArgs(arg_lead, cmd_line, cursor_pos)
 endfu
 
 "" Local Var & Functions {{{1
+fu! s:loadLastDownQ()
+  if a:0 == 0
+    let last_down_Q_info = leetcode#utils#accessFiles#readLastDownQInfo()
+    try
+      let viewResult = s:viewQandCodeFiles(1, last_down_Q_info[1], last_down_Q_info[2], last_down_Q_info[3], last_down_Q_info[4])
+      if viewResult == -1
+        echoe '[' .g:leetcode_name .'] More than one match of code file in the buffer list.'
+        retu -6
+      el
+        echom '[' .g:leetcode_name .'] "' .last_down_Q_info[0] . g:leetcode_path_delimit .last_down_Q_info[3] .'" loaded.'
+        retu 0
+      endif
+    cat /.*/ |  retu -1 | endt
+  endif
+endfu
+
 fu! s:getDidQFullname(did_Q_partialname)
   "" a:did_Q_partialname is supposed to be in either one of the following 3 forms:
   "" (1) "[ID] Name". Partial match.
@@ -118,22 +146,6 @@ fu! s:getDidQFullname(did_Q_partialname)
   en
   retu 0
 endfu
-
-"" fu! leetcode#utils#accessFiles#allCodeFiles(Q_fullname)
-""   let root_path = leetcode#utils#path#getRootDir()
-""   let code_dir_path = root_path .g:leetcode_path_delimit .a:Q_fullname
-""   let all_code_filenames = split(globpath(fnameescape(code_dir_path), '*' .g:leetcode_lang), '\n')
-""   cal map(all_code_filenames, {key, val -> matchstr(val, g:leetcode_path_delimit .'\zs[^\' .g:leetcode_path_delimit .']*\ze$')})
-""   retu all_code_filenames
-"" endfu
-
-"" fu! leetcode#utils#accessFiles#allDidQ()
-""   let root_path = leetcode#utils#path#getRootDir()
-""   let all_did_Q = split(globpath(root_path, '*' .g:leetcode_path_delimit), '\n')
-""   cal map(all_did_Q, {key, val -> matchstr(val, g:leetcode_path_delimit
-""         \.'\zs[^\' .g:leetcode_path_delimit .']*\ze' .g:leetcode_path_delimit .'$')})
-""   retu all_did_Q
-"" endfu
 
 fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
   exe 'lcd ' .leetcode#utils#path#escape(a:destination_dir_path)
