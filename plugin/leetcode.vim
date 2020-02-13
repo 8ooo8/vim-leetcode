@@ -35,10 +35,3 @@ cal leetcode#utils#path#init()
 com! -nargs=* -complete=customlist,leetcode#doQ#completeCmdArgs LdoQ cal leetcode#doQ#doQ(<f-args>)
 com! -nargs=* Ltest cal leetcode#testCode#testCode(<q-args>)
 com! -nargs=* Lsubmit cal leetcode#submitCode#submitCode(<f-args>)
-"" TO-DO: DO LAST QUESTION IF Q ID OR NAME NOT GIVEN
-"" TO-DO: LOCAL TEST
-"" TO-DO: RENAME CODE FILE
-"" TO-DO: DELETE QUESTION AND CORRESPONDING CODE FILES
-"" TO-DO: SIGN IN
-"" TO-DO: SIGN OUT
-"" TO-DO: SHOW QUESTIONS

@@ -13,7 +13,7 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   "" Commenting the dependencies to avoid a compilation error during a test or
   "" submission of the current code file
   let current_line = line('.')
-  exe 'sil wundo! ' .fnameescape(s:undo_history_filepath)
+  exe 'sil wundo! ' .fnameescape(g:leetcode_undo_history_path)
   cal leetcode#lang#utils#commentDependencies()
   try 
     echoh None | ec '[' .g:leetcode_name .'] Loading ...'
@@ -25,14 +25,14 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   finally
     cal leetcode#lang#utils#uncommentDependencies()
     try
-      exe 'sil rundo ' .fnameescape(s:undo_history_filepath)
+      exe 'sil rundo ' .fnameescape(g:leetcode_undo_history_path)
     cat /E822/ ""when empty undo history
       let old_ul = &ul
       setl ul=-1
       exe "norm! a \<BS>\<Esc>"
       exe 'setl ul=' .old_ul
     endt 
-    exe 'sil !rm "' .s:undo_history_filepath .'"'
+    exe 'sil !rm "' .g:leetcode_undo_history_path .'"'
     cal leetcode#lang#utils#foldDependencies()
     exe 'keepj norm! ' .current_line .'G'
     retu error
@@ -41,7 +41,6 @@ endfu
 
 
 "" Local Var & Functions {{{1
-let s:undo_history_filepath = substitute(expand('<sfile>:p'), '.vim$', '', '') .'_undohistory'
 fu! s:displayTestOrSubmitResult(result)
   "" Sample output 1 of the test command of 'leetcode-cli' in list form
   "" ['- Downloading valid-number', '- Sending code to judge', '- Waiting for judge result', 

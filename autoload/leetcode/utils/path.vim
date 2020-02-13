@@ -8,6 +8,7 @@ fu! leetcode#utils#path#init()
   en
   let g:leetcode_data_path = g:leetcode_plugin_path .g:leetcode_path_delimit .'data'
   let g:leetcode_last_down_Q_data_path = g:leetcode_data_path .g:leetcode_path_delimit .'last_down_Q'
+  let g:leetcode_undo_history_path = g:leetcode_data_path .g:leetcode_path_delimit .'tmp_undo_history'
 endfu
 
 fu! leetcode#utils#path#getRootDir()
