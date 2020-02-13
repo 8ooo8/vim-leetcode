@@ -51,7 +51,7 @@ fu! leetcode#doQ#doQ(...)
       retu -4
     endt
   en
-  let existing_code_filenames = split(globpath(leetcode#utils#path#escape(destination_dir_path), '*.' .g:leetcode_lang), '\n')
+  let existing_code_filenames = split(globpath(fnameescape(destination_dir_path), '*.' .g:leetcode_lang), '\n')
   cal map(existing_code_filenames, {key, val -> substitute(val, '.*\' .g:leetcode_path_delimit, '', '')})
   if a:0 == 1 ""when users do not specify the code filename
     let code_filename = existing_code_filenames[0]
@@ -66,7 +66,6 @@ fu! leetcode#doQ#doQ(...)
   en
   let code_filepath = destination_dir_path .g:leetcode_path_delimit .code_filename
   if !did_this_Q
-    echom 'write last q info'
     cal leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
   en
   
@@ -148,26 +147,26 @@ fu! s:getDidQFullname(did_Q_partialname)
 endfu
 
 fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
-  exe 'lcd ' .leetcode#utils#path#escape(a:destination_dir_path)
+  exe 'lcd ' .fnameescape(a:destination_dir_path)
   sil on!
   try
     "" Try :b before :e to avoid an erase of the changes made to the code
     "" file buffer, which occurs when it is the current buffer
-    exe 'sil b! ' .leetcode#utils#path#escape(a:code_filename)
+    exe 'sil b! ' .fnameescape(a:code_filename)
     set bl
   cat /E93/
     ""when more than one match in the buffer list
     retu -1
   cat /E94/
     ""when no matched buffer
-    exe 'sil e! ' .leetcode#utils#path#escape(a:code_filepath) 
+    exe 'sil e! ' .fnameescape(a:code_filepath) 
   endt
 
   if g:leetcode_viewQ
     vs
-    exe 'sil e' .leetcode#utils#path#escape(a:Q_filepath)
+    exe 'sil e' .fnameescape(a:Q_filepath)
     if !a:did_this_Q | cal s:RemoveHTMLTagsInCurrentQFile() | sil w | en
-    exe 'lcd ' .leetcode#utils#path#escape(a:destination_dir_path)
+    exe 'lcd ' .fnameescape(a:destination_dir_path)
     1wincmd w
   elseif !g:leetcode_viewQ && !a:did_this_Q
     exe 'sil e ' .a:Q_filepath

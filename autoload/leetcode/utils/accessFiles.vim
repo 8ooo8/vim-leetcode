@@ -5,7 +5,7 @@ fu! leetcode#utils#accessFiles#buildDataContainer()
   endif
 endfu
 
-"" Last question {{{2
+"" Last Downloaded Question {{{2
 fu! leetcode#utils#accessFiles#buildLastDownQStorage()
   cal leetcode#utils#accessFiles#buildDataContainer()
   if !filereadable(g:leetcode_last_down_Q_data_path)

@@ -10,10 +10,6 @@ fu! leetcode#utils#path#init()
   let g:leetcode_last_down_Q_data_path = g:leetcode_data_path .g:leetcode_path_delimit .'last_down_Q'
 endfu
 
-fu! leetcode#utils#path#escape(path)
-  return escape(a:path, ' [')
-endfu
-
 fu! leetcode#utils#path#getRootDir()
   if exists('g:leetcode_root_dir')
     retu g:leetcode_root_dir

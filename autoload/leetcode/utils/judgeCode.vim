@@ -13,7 +13,7 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   "" Commenting the dependencies to avoid a compilation error during a test or
   "" submission of the current code file
   let current_line = line('.')
-  exe 'sil wundo! ' .leetcode#utils#path#escape(s:undo_history_filepath)
+  exe 'sil wundo! ' .fnameescape(s:undo_history_filepath)
   cal leetcode#lang#utils#commentDependencies()
   try 
     echoh None | ec '[' .g:leetcode_name .'] Loading ...'
@@ -25,7 +25,7 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   finally
     cal leetcode#lang#utils#uncommentDependencies()
     try
-      exe 'sil rundo ' .leetcode#utils#path#escape(s:undo_history_filepath)
+      exe 'sil rundo ' .fnameescape(s:undo_history_filepath)
     cat /E822/ ""when empty undo history
       let old_ul = &ul
       setl ul=-1
