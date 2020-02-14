@@ -32,6 +32,6 @@ cal leetcode#utils#path#init()
 
 "" API {{{1
 com! -nargs=* -complete=customlist,leetcode#doQ#completeCmdArgs LdoQ cal leetcode#doQ#doQ(<f-args>)
-com! -nargs=* LrenameCodeFile cal leetcode#renameCodeFile#RenameCodeFile(<f-args>)
+com! -nargs=* LrenameCodeFile cal leetcode#renameCodeFile#renameCodeFile(<f-args>)
 com! -nargs=* Ltest cal leetcode#testCode#testCode(<q-args>)
 com! -nargs=* Lsubmit cal leetcode#submitCode#submitCode(<f-args>)
