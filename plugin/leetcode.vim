@@ -15,8 +15,9 @@ if v:version < 700
   fini
 en
 if has('win32unix') || has('win16') || has('win32') || has('win64')
-    echom '[leetcode plugin]: Please make sure your environment suuports the basic unix shell commands'
+    echom '[' .g:leetcode_name .']: Please make sure your environment suuports the basic unix shell commands'
 en
+if &cp | echoe '[' .g:leetcode_name .'] Not Vi-compatible. ":set nocp" to solve it.' | en
 "if exists('g:loaded_leetcode') && g:loaded_leetcode | fini | en
 "let g:loaded_leetcode = 1
 
