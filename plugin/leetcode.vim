@@ -28,7 +28,6 @@ if !exists('g:leetcode_autoinsert') | let g:leetcode_autoinsert = 1 | en
 "" "g:leetcode_root_dir": if it does not exist, pwd will be used
 
 "" Initialize {{{1
-let g:leetcode_plugin_path = expand('<sfile>:p:h:h')
 cal leetcode#utils#path#init()
 
 "" API {{{1

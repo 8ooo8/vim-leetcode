@@ -1,3 +1,5 @@
+let g:leetcode_plugin_path = expand('<sfile>:p:h:h:h:h')
+
 fu! leetcode#utils#path#init()
   if has('win32unix') || has('win16') || has('win32') || has('win64')
     let g:leetcode_path_delimit = '\'
