@@ -19,43 +19,50 @@ fu! leetcode#doQ#doQ(...)
     retu 0
   endif
 
-  "" Initialize the names & paths of the question and code files
+  "" Initialize the names & paths of the question and code files.
+  "" At the same time, download questions and code template if requested.
+  "" Afterwards, based on the names and paths find the requested files and open them.
   let root_path = leetcode#utils#path#getRootDir()
   let Q_fullname = s:getDidQFullname(a:1)
-  if Q_fullname < 0
+  if Q_fullname < 0 "" when it is NOT a DID question
     let Q_fullname = s:getQFullNameFromLeetcodeServer(a:1)
-    if Q_fullname == -1
+    if Q_fullname == -1 "" when an error results in enquiring the leetcode server about the question
       echoe '[' .g:leetcode_name .'] Error in retriving the question. Please make sure the question ID or name is correct.'
       retu -3
     endif
   en
   let destination_dir_path = root_path .g:leetcode_path_delimit .Q_fullname
-  let did_this_Q = isdirectory(destination_dir_path)
   let Q_filename = 'Q.txt'
   let Q_filepath = destination_dir_path .g:leetcode_path_delimit .Q_filename
-  if !did_this_Q && a:0 == 1
-    cal s:downQ(destination_dir_path, a:1, Q_filename)
+  "" Download the question and the code template if needed
+  let existing_code_filenames = leetcode#utils#accessFiles#allCodeFiles(Q_fullname)
+  if a:0 == 2
+    if a:2 =~ '\.' .leetcode#lang#utils#getExt() .'$'
+      let code_filename = a:2
+    el
+      let code_filename = a:2 .'.' .leetcode#lang#utils#getExt()
+    en
+  endif
+  let need_to_down = (a:0 == 2 && index(existing_code_filenames, code_filename) < 0) || len(existing_code_filenames) == 0
+  if need_to_down
+    let down_result = s:downQ(destination_dir_path, Q_fullname, a:1, Q_filename, (exists('code_filename') ? code_filename : ''))
+    if down_result == -1
+      echoe '[' .g:leetcode_name .'] Error in creating the question and code file. '
+      retu -4
+    endif
+    echom '[' .g:leetcode_name .'] Question and code file downloaded.'
   en
-  let existing_code_filenames = split(globpath(fnameescape(destination_dir_path), '*.' .g:leetcode_lang), '\n')
-  cal map(existing_code_filenames, {key, val -> substitute(val, '.*\' .g:leetcode_path_delimit, '', '')})
-  if a:0 == 1 ""when users do not specify the code filename
-    let code_filename = existing_code_filenames[0]
-  el
-    for ecf in existing_code_filenames
-      if ecf =~? a:2 | let code_filename = ecf | break | en
-    endfor
-      if !exists('code_filename')
-        echoe '[' .g:leetcode_name .'] The specified code file cannot be found.'
-        retu -5
-      endif
+  "" Determine code_filename if it is not yet determined
+  if !exists('code_filename')
+    let code_filename = leetcode#utils#accessFiles#allCodeFiles(Q_fullname)[0]
   en
   let code_filepath = destination_dir_path .g:leetcode_path_delimit .code_filename
 
-  if !did_this_Q
+  if need_to_down
     cal leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
   en
   
-  let viewResult = s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
+  let viewResult = s:viewQandCodeFiles(need_to_down, destination_dir_path, Q_filepath, code_filename, code_filepath)
   if viewResult == -1
     echoe '[' .g:leetcode_name .'] More than one match of code file in the buffer list.'
     retu -6
@@ -83,18 +90,40 @@ fu! leetcode#doQ#completeCmdArgs(arg_lead, cmd_line, cursor_pos)
 endfu
 
 "" Local Var & Functions {{{1
-fu! s:downQ(destination_dir_path, Q_ID_or_name, Q_filename)
+fu! s:downQ(destination_dir_path, Q_fullname, Q_ID_or_name, Q_filename, code_filename)
+  let code_filenames = leetcode#utils#accessFiles#allCodeFiles(a:Q_fullname)
+  
   try
     exe 'sil !mkdir -p "' .a:destination_dir_path .'"'
-    exe 'lcd ' .a:destination_dir_path
     if a:Q_ID_or_name =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
-      exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .matchstr(a:Q_ID_or_name, '\[\zs\d\+\ze\]') .'" > ' .a:Q_filename
+      let Q_ID_or_name = matchstr(a:Q_ID_or_name, '\[\zs\d\+\ze\]')
     el
-      exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .a:Q_ID_or_name .'" > ' .a:Q_filename
+      let Q_ID_or_name = a:Q_ID_or_name
+    en
+    exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' -o "' .a:destination_dir_path .'" "' 
+          \.Q_ID_or_name .'" > "' .a:destination_dir_path . g:leetcode_path_delimit .a:Q_filename .'"'
+
+    "" if the code filename is specified, change the name of the downloaded question
+    "" accordingly
+    if a:code_filename != ''
+      "" get the name of the downloaded code template
+      let new_code_filenames = leetcode#utils#accessFiles#allCodeFiles(a:Q_fullname)
+      if len(code_filenames) == 0
+        let down_code_filename = new_code_filenames[0]
+      el
+        for n in new_code_filenames
+          for c in code_filenames
+            if n != c | let down_code_filename = n | break | endif
+          endfor
+          if exists('down_code_filename') | break | endif
+        endfor
+      endif
+      "" rename the downloaded code template
+      exe 'sil !mv "' .a:destination_dir_path .g:leetcode_path_delimit .down_code_filename .'" "'
+          \.a:destination_dir_path .g:leetcode_path_delimit .a:code_filename .'"'
     en
   cat /*/
-    echoe '[' .g:leetcode_name .'] Error in creating the question and code file. '
-    retu -4
+    retu -1
   endt
 endfu
 
@@ -102,7 +131,7 @@ fu! s:loadLastDownQ()
   if a:0 == 0
     let last_down_Q_info = leetcode#utils#accessFiles#readLastDownQInfo()
     try
-      let viewResult = s:viewQandCodeFiles(1, last_down_Q_info[1], last_down_Q_info[2], last_down_Q_info[3], last_down_Q_info[4])
+      let viewResult = s:viewQandCodeFiles(0, last_down_Q_info[1], last_down_Q_info[2], last_down_Q_info[3], last_down_Q_info[4])
       if viewResult == -1
         echoe '[' .g:leetcode_name .'] More than one match of code file in the buffer list.'
         retu -6
@@ -147,7 +176,7 @@ fu! s:getDidQFullname(did_Q_partialname)
   retu -1
 endfu
 
-fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
+fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filename, code_filepath)
   exe 'lcd ' .fnameescape(a:destination_dir_path)
   sil on!
   try
@@ -164,32 +193,30 @@ fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filen
   endt
 
   if g:leetcode_viewQ
+    try | exe 'sil bw!' .fnameescape(a:Q_filepath) 
+    cat /.*/ | endt
     vs
-    exe 'sil e' .fnameescape(a:Q_filepath)
-    if !a:did_this_Q | cal s:RemoveHTMLTagsInCurrentQFile() | sil w | en
+    exe 'sil e! ' .fnameescape(a:Q_filepath)
+    if a:new_down | cal s:RemoveHTMLTagsInCurrentQFile() | sil w | en
     exe 'lcd ' .fnameescape(a:destination_dir_path)
     1wincmd w
-  elseif !g:leetcode_viewQ && !a:did_this_Q
+  elseif !g:leetcode_viewQ && a:new_down
     exe 'sil e ' .a:Q_filepath
     cal s:RemoveHTMLTagsInCurrentQFile() | sil w
     b # | bd #
   en
 
-  if !a:did_this_Q
+  if a:new_down
     cal leetcode#lang#utils#addDependencies()
     sil w
   en
   cal leetcode#lang#utils#foldDependencies()
 
-  if a:did_this_Q
-    try
-      exe 'norm! `.' 
-      "" when it is an unchanged file, e.g. a copy of the old code file
-    cat /E20\|E19/ | cal leetcode#lang#utils#goToWhereCodeBegins()
-    endt
-  el
-    cal leetcode#lang#utils#goToWhereCodeBegins()
-  en
+  try
+    exe 'norm! `.' 
+  cat /E20\|E19/ | cal leetcode#lang#utils#goToWhereCodeBegins()
+  endt
+    
   if g:leetcode_autoinsert
     star
   en
