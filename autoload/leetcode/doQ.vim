@@ -3,7 +3,7 @@
 ""          a:2 Optional code filename
 fu! leetcode#doQ#doQ(...) 
   if a:0 > 2
-    echoe '[' .g:leetcode_name .'] :LdoQ [Question ID or Name] [code filename]'
+    echoe '[' .g:leetcode_name .'] :LdoQ [Question ID or Name] [Code Filename]'
     retu -1
   endif
   if !leetcode#lang#utils#langIsSupported(g:leetcode_lang)

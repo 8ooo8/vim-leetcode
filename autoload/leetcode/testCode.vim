@@ -1,7 +1,7 @@
 "" API {{{1
 fu! leetcode#testCode#testCode(...)
   if a:0 >= 2
-    echoe '[' .g:leetcode_name .'] :Ltest [one test case]'
+    echoe '[' .g:leetcode_name .'] :Ltest [One Test Case]'
     retu -1
   endif
 

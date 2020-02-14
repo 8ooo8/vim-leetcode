@@ -26,7 +26,7 @@ endfu
 "" viewed in the current window
 fu! leetcode#renameCodeFile#renameCodeFile(...)
   if a:0 != 1
-    echoe '[' .g:leetcode_name .'] LrenameCodeFile {newname}'
+    echoe '[' .g:leetcode_name .'] :LrenameCodeFile {New Name}'
     retu -1
   el
     cal leetcode#renameCodeFile#renameCurrentCodeFile(a:1)
