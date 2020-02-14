@@ -22,11 +22,7 @@ fu! leetcode#doQ#doQ(...)
   "" Initialize the names & paths of the question and code files
   let root_path = leetcode#utils#path#getRootDir()
   let Q_fullname = s:getDidQFullname(a:1)
-  if Q_fullname == 0
-    "" when the specified question does not exist
-    "" TO-DO: LOW PRIORITY. IN A NEW BRANCH,
-    "" SAVE THE QUESTION AT THE SAME TIME SO THAT NO NEED TO REQUEST THE
-    "" LEETCODE SERVER FOR THE QUESTION AGAIN
+  if Q_fullname < 0
     let Q_fullname = s:getQFullNameFromLeetcodeServer(a:1)
     if Q_fullname == -1
       echoe '[' .g:leetcode_name .'] Error in retriving the question. Please make sure the question ID or name is correct.'
@@ -38,18 +34,7 @@ fu! leetcode#doQ#doQ(...)
   let Q_filename = 'Q.txt'
   let Q_filepath = destination_dir_path .g:leetcode_path_delimit .Q_filename
   if !did_this_Q && a:0 == 1
-    try
-      exe 'sil !mkdir -p "' .destination_dir_path .'"'
-      exe 'lcd ' .destination_dir_path
-      if a:1 =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
-        exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .matchstr(a:1, '\[\zs\d\+\ze\]') .'" > ' .Q_filename
-      el
-        exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .a:1 .'" > ' .Q_filename
-      en
-    cat /*/
-      echoe '[' .g:leetcode_name .'] Error in creating the question and code file. '
-      retu -4
-    endt
+    cal s:downQ(destination_dir_path, a:1, Q_filename)
   en
   let existing_code_filenames = split(globpath(fnameescape(destination_dir_path), '*.' .g:leetcode_lang), '\n')
   cal map(existing_code_filenames, {key, val -> substitute(val, '.*\' .g:leetcode_path_delimit, '', '')})
@@ -65,6 +50,7 @@ fu! leetcode#doQ#doQ(...)
       endif
   en
   let code_filepath = destination_dir_path .g:leetcode_path_delimit .code_filename
+
   if !did_this_Q
     cal leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
   en
@@ -97,6 +83,21 @@ fu! leetcode#doQ#completeCmdArgs(arg_lead, cmd_line, cursor_pos)
 endfu
 
 "" Local Var & Functions {{{1
+fu! s:downQ(destination_dir_path, Q_ID_or_name, Q_filename)
+  try
+    exe 'sil !mkdir -p "' .a:destination_dir_path .'"'
+    exe 'lcd ' .a:destination_dir_path
+    if a:Q_ID_or_name =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
+      exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .matchstr(a:Q_ID_or_name, '\[\zs\d\+\ze\]') .'" > ' .a:Q_filename
+    el
+      exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' "' .a:Q_ID_or_name .'" > ' .a:Q_filename
+    en
+  cat /*/
+    echoe '[' .g:leetcode_name .'] Error in creating the question and code file. '
+    retu -4
+  endt
+endfu
+
 fu! s:loadLastDownQ()
   if a:0 == 0
     let last_down_Q_info = leetcode#utils#accessFiles#readLastDownQInfo()
@@ -143,7 +144,7 @@ fu! s:getDidQFullname(did_Q_partialname)
       retu leetcode#utils#accessFiles#allDidQ()[idx]
     endif
   en
-  retu 0
+  retu -1
 endfu
 
 fu! s:viewQandCodeFiles(did_this_Q, destination_dir_path, Q_filepath, code_filename, code_filepath)
