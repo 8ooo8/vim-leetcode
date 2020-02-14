@@ -193,7 +193,7 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
   endt
 
   if g:leetcode_viewQ
-    try | exe 'sil bw!' .fnameescape(a:Q_filepath) 
+    try | exe 'sil bd!' .fnameescape(a:Q_filepath) 
     cat /.*/ | endt
     vs
     exe 'sil e! ' .fnameescape(a:Q_filepath)

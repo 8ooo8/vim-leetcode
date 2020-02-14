@@ -44,7 +44,7 @@ fu! leetcode#utils#accessFiles#readLastDownQInfo()
   cal add(info, substitute(getline(search('code_filename: "')), 'code_filename: "\|"$', '', 'g'))
   cal add(info, substitute(getline(search('code_filepath: "')), 'code_filepath: "\|"$', '', 'g'))
   b #
-  bw! #
+  bd! #
   retu info
 endfu
 
