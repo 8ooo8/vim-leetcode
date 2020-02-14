@@ -31,3 +31,7 @@ endfu
 fu! leetcode#lang#utils#goToWhereCodeBegins()
   exe 'cal leetcode#lang#' .g:leetcode_lang .'#goToWhereCodeBegins()'
 endfu
+
+fu! leetcode#lang#utils#getExt()
+  retu execute('echon leetcode#lang#' .g:leetcode_lang .'#getExt()')
+endfu

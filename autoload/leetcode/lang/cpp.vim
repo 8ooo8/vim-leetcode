@@ -1,4 +1,5 @@
 let s:lang = 'cpp'
+let s:ext = 'cpp'
 let s:dependencies = [
       \'/*** [' .g:leetcode_name .'] For Local Syntax Checking ***/',
       \'#define DEPENDENCIES', '#ifdef DEPENDENCIES',
@@ -58,4 +59,8 @@ endfu
 
 fu! leetcode#lang#cpp#uncommentDependencies()
   exe 'keepj keepp sil %sm@\C\s*\zs/*\ze.*' .s:dependencies[1] .'.*$@@'
+endfu
+
+fu! leetcode#lang#cpp#getExt()
+  retu s:ext
 endfu
