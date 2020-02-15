@@ -1,4 +1,4 @@
-"" Version: 0.0.0
+"" Version: 0.0.1
 "" Usage:
 "" This is tiny plugin which allows users quickly downloading and writing for 
 "" leetcode questions. 

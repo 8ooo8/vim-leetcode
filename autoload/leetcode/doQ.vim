@@ -26,8 +26,7 @@ fu! leetcode#doQ#doQ(...)
   let Q_fullname = s:getDidQFullname(a:1)
   if Q_fullname < 0 "" when it is NOT a DID question
     let Q_fullname = s:getQFullNameFromLeetcodeServer(a:1)
-    if Q_fullname == -1 "" when an error results in enquiring the leetcode server about the question
-      echoe '[' .g:leetcode_name .'] Error in retriving the question. Please make sure the question ID or name is correct.'
+    if Q_fullname < 0 "" when an error results in enquiring the leetcode server about the question
       retu -3
     endif
   en
@@ -227,7 +226,11 @@ endf
 fu! s:getQFullNameFromLeetcodeServer(Q_ID_or_name)
   "" Ensure it is under a valid directory so that
   "" the "leetcode-cli' commands may function properly
-  exe 'lcd ' .g:leetcode_valid_dir_path
+  try | sil pwd
+  cat /E187/
+    echoe '[' .g:leetcode_name .'] Present working directory is invalid. It is possibly deleted.'
+    retu -1
+  endtry
   "" When a:Q_ID_or_name is in a form of "[ID] Name", fetch the question by the ID.
   "" Afterwards, check if a:Q_ID_or_name matches with the fetched question
   if a:Q_ID_or_name =~ '\[\d\+\]\([ a-zA-Z0-9]\)\+'
@@ -247,7 +250,8 @@ fu! s:getQFullNameFromLeetcodeServer(Q_ID_or_name)
         \Q_fullname =~? escape(a:Q_ID_or_name, '[]'))
     retu Q_fullname
   el
-    return -1
+    echoe '[' .g:leetcode_name .'] Error in retriving the question. Please make sure the question ID or name is correct.'
+    return -2
   en
 endfu
 
