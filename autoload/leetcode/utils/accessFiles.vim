@@ -37,7 +37,7 @@ endfu
 "" @return  [destination_dir_path, Q_filepath, code_filename, code_filepath]
 fu! leetcode#utils#accessFiles#readLastDownQInfo()
   let info = []
-  exe 'e! ' .g:leetcode_last_down_Q_data_path
+  exe 'sil e! ' .g:leetcode_last_down_Q_data_path
   cal add(info, substitute(getline(search('Q_fullname: "')), 'Q_fullname: "\|"$', '', 'g'))
   cal add(info, substitute(getline(search('destination_dir_path: "')), 'destination_dir_path: "\|"$', '', 'g'))
   cal add(info, substitute(getline(search('Q_filepath: "')), 'Q_filepath: "\|"$', '', 'g'))
