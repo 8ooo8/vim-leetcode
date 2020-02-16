@@ -198,7 +198,7 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
     exe 'sil e! ' .fnameescape(a:Q_filepath)
     if a:new_down | cal s:RemoveHTMLTagsInCurrentQFile() | sil w | en
     exe 'lcd ' .fnameescape(a:destination_dir_path)
-    1wincmd w
+    wincmd p
   elseif !g:leetcode_viewQ && a:new_down
     exe 'sil e ' .a:Q_filepath
     cal s:RemoveHTMLTagsInCurrentQFile() | sil w
