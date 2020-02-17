@@ -1,10 +1,12 @@
 # Leetcode
-A structure of Leetcode question and code files in Vim.
+A Leetcode question and code file manager in Vim.
 
 ## Requirement
 * Basic Unix shell commands. Windows users may be interested in [cygwin][1].
 * Unset Vi-compatible.
-* Have [leetcode-cli][2] installed.
+* Have [leetcode-cli][2] installed and sign in.
+    * ["skygragon/leetcode-cli"][3] is no longer in maintenance. Please fetch ["leetcode-tools/leetcode-cli"][2].
+    * If encountering a problem of "Invalid password", install and enable a cookie [plugin][4]. The plugin will make use of the cookie in your web browser to pass through the recaptcha checking.
 
 ## Installation
 ### Without Plugin Manager
@@ -74,3 +76,5 @@ let g:leetcode_autoinsert = 1
 
 [1]: https://www.cygwin.com/
 [2]: https://github.com/leetcode-tools/leetcode-cli/
+[3]: https://github.com/skygragon/leetcode-cli
+[4]: https://skygragon.github.io/leetcode-cli/commands#plugin
