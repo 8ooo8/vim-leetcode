@@ -32,7 +32,7 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
       exe "norm! a \<BS>\<Esc>"
       exe 'setl ul=' .old_ul
     endt 
-    exe 'sil !rm "' .g:leetcode_undo_history_path .'"'
+    cal system('rm "' .g:leetcode_undo_history_path .'"')
     cal leetcode#lang#utils#foldDependencies()
     exe 'keepj norm! ' .current_line .'G'
     retu error
