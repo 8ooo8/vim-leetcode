@@ -22,15 +22,14 @@ fu! leetcode#lang#cpp#addDependencies()
   keepj norm! gg   
   try | exe 'keepp sil ' .s:depend_location
   cat /E486/ 
-    echoe '[' .g:leetcode_name .'] Error in locating the position to add dependencies'
-    retu -1
+    throw 'Error in locating the position to add dependencies'
   endt
   "" Add dependencies and make it non-undoable
   let old_ul = &ul
   setlocal ul=-1
   keepj cal append(line('.'), s:dependencies)
   exe 'setlocal ul='.old_ul
-  retu 0
+  retu 1
 endfu
 
 fu! leetcode#lang#cpp#foldDependencies()
@@ -43,14 +42,19 @@ fu! leetcode#lang#cpp#foldDependencies()
       let last_fold_line = searchpair('\C\s*#ifdef\>', '', '\C\s*endif\>', 'W')
       exe 'keepj norm! ' .first_fold_line .'G' .(last_fold_line - first_fold_line + 1) .'zF'
     en
+    retu 1
   cat /E486/
-    echoe '[' .g:leetcode_name .'] Error in locating the dependencies to fold'
+    throw 'Error in locating the dependencies to fold'
   endt
 endfu
 
 fu! leetcode#lang#cpp#goToWhereCodeBegins()
   keepj keepp sil /\m\%$/
-  exe 'sil ' .s:code_begin_location
+  try 
+    exe 'sil ' .s:code_begin_location
+  cat /E486/
+    throw 'Error in locating where to start code writing.'
+  endt
 endfu
 
 fu! leetcode#lang#cpp#commentDependencies()
