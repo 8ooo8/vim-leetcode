@@ -1,7 +1,7 @@
 "" Data Storage {{{1
 fu! leetcode#utils#accessFiles#buildDataContainer()
   if !isdirectory(g:leetcode_data_path)
-    exe 'sil !mkdir -p "' . g:leetcode_data_path .'"'
+    cal system('mkdir -p "' . g:leetcode_data_path .'"')
   endif
 endfu
 
@@ -9,20 +9,20 @@ endfu
 fu! leetcode#utils#accessFiles#buildLastDownQStorage()
   cal leetcode#utils#accessFiles#buildDataContainer()
   if !filereadable(g:leetcode_last_down_Q_data_path)
-    exe 'sil !touch "' .g:leetcode_last_down_Q_data_path .'"'
+    cal system('touch "' .g:leetcode_last_down_Q_data_path .'"')
   endif
 endfu
 
 fu! leetcode#utils#accessFiles#appendTextToLastDownQStorage(text)
   cal leetcode#utils#accessFiles#buildLastDownQStorage()
   "" Append text in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
-  exe 'sil !echo "' .escape(a:text, '"') .'" >> "' .g:leetcode_last_down_Q_data_path .'"'
+  cal system('echo "' .escape(a:text, '"') .'" >> "' .g:leetcode_last_down_Q_data_path .'"')
 endfu
 
 fu! leetcode#utils#accessFiles#clearLastDownQStorage()
   cal leetcode#utils#accessFiles#buildLastDownQStorage()
   "" clear in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
-  exe 'sil ! > "' .g:leetcode_last_down_Q_data_path .'"'
+  cal system(' > "' .g:leetcode_last_down_Q_data_path .'"')
 endfu
 
 fu! leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)

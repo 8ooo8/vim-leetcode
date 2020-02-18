@@ -17,8 +17,8 @@ fu! leetcode#renameCodeFile#renameCurrentCodeFile(newname)
   "" :saveas saves the marks, etc, as well
   exe 'sil sav ' .fnameescape(new_code_filepath)
   sil bw! #
-  exe 'sil !rm "' .old_code_filepath .'"'
-  echo 'Renamed from "' .old_code_filename .'" to "' .newname .'".'
+  cal system('rm "' .old_code_filepath .'"')
+  echo '[' .g:leetcode_name .'] Renamed from "' .old_code_filename .'" to "' .newname .'".'
   retu 0
 endfu
 

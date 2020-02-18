@@ -93,14 +93,14 @@ fu! s:downQ(destination_dir_path, Q_fullname, Q_ID_or_name, Q_filename, code_fil
   let code_filenames = leetcode#utils#accessFiles#allCodeFiles(a:Q_fullname)
   
   try
-    exe 'sil !mkdir -p "' .a:destination_dir_path .'"'
+    cal system('mkdir -p "' .a:destination_dir_path .'"')
     if a:Q_ID_or_name =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
       let Q_ID_or_name = matchstr(a:Q_ID_or_name, '\[\zs\d\+\ze\]')
     el
       let Q_ID_or_name = a:Q_ID_or_name
     en
-    exe 'sil !leetcode show -g -l ' .g:leetcode_lang .' -o "' .a:destination_dir_path .'" "' 
-          \.Q_ID_or_name .'" > "' .a:destination_dir_path . g:leetcode_path_delimit .a:Q_filename .'"'
+    cal system('leetcode show -g -l ' .g:leetcode_lang .' -o "' .a:destination_dir_path .'" "'
+          \.Q_ID_or_name .'" > "' .a:destination_dir_path . g:leetcode_path_delimit .a:Q_filename .'"')
 
     "" if the code filename is specified, change the name of the downloaded question
     "" accordingly
@@ -118,8 +118,8 @@ fu! s:downQ(destination_dir_path, Q_fullname, Q_ID_or_name, Q_filename, code_fil
         endfor
       endif
       "" rename the downloaded code template
-      exe 'sil !mv "' .a:destination_dir_path .g:leetcode_path_delimit .down_code_filename .'" "'
-          \.a:destination_dir_path .g:leetcode_path_delimit .a:code_filename .'"'
+      cal system('mv "' .a:destination_dir_path .g:leetcode_path_delimit .down_code_filename .'" "'
+          \.a:destination_dir_path .g:leetcode_path_delimit .a:code_filename .'"')
     en
   cat /*/
     retu -1
