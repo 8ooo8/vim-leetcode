@@ -117,10 +117,13 @@ endfu
 fu! s:loadLastDownQ()
   try
     let last_down_Q_info = leetcode#utils#accessFiles#readLastDownQInfo()
+    if !filereadable(last_down_Q_info[4])
+      throw 'The last downloaded code file cannot be found.'
+    endif
     let viewResult = s:viewQandCodeFiles(0, last_down_Q_info[1], last_down_Q_info[2], last_down_Q_info[3], last_down_Q_info[4])
     echom '[' .g:leetcode_name .'] "' .last_down_Q_info[0] . g:leetcode_path_delimit .last_down_Q_info[3] .'" loaded.'
     retu 1
-  cat /.*/ | throw 'Error in loading the last downloaded question.' | endt
+  cat /.*/ | throw 'Error in loading the last downloaded question and code file.' | endt
 endfu
 
 fu! s:getDidQFullname(did_Q_partialname)
