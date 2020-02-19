@@ -18,6 +18,34 @@ let s:dependencies = [
 let s:depend_location = '/\mclass\s\+solution\c\s\+{/-' 
 let s:code_begin_location = '?\m)\s*{?+'
 
+fu! leetcode#lang#cpp#locateLeetcodeCliComment(topmost_line)
+  exe 'keepj norm! ' .(a:topmost_line - 1) .'G'
+  let comment_first_line = search('\/\*')
+  let comment_last_line = searchpair('\/\*', '', '\*\/', 'W')
+  return [comment_first_line, comment_last_line]
+endfu
+
+"" DEVELOPED BASED ON A LIMITED NUMBER OF KNOWN QUESTIONS WITH CUSTOM DEPENDENCIES
+fu! leetcode#lang#cpp#getCustomDependencies()
+  keepj norm! gg
+  let lc_code_start_line = search('@\s*lc\s*code\s*=\s*start')
+  let [comment_first_line, comment_last_line] = leetcode#lang#cpp#locateLeetcodeCliComment(lc_code_start_line + 1)
+  exe 'keepj norm! ' .comment_first_line .'G'
+  let definition_comment_line = search('\cdefinition for')
+  if definition_comment_line == 0
+    retu []
+  endif
+  let custom_depend = []
+  let custom_depend_line = definition_comment_line + 1
+  while custom_depend_line < comment_last_line
+    exe 'keepj norm! ' .custom_depend_line .'G'
+    cal add(custom_depend, getline(custom_depend_line))
+    let custom_depend_line += 1
+  endwhile
+  cal map(custom_depend, {key, val -> matchstr(val, '\s*\*\+\s*\zs.*')})
+  retu custom_depend
+endfu
+
 fu! leetcode#lang#cpp#addDependencies()
   keepj norm! gg   
   try | exe 'keepp sil ' .s:depend_location
@@ -28,6 +56,9 @@ fu! leetcode#lang#cpp#addDependencies()
   let old_ul = &ul
   setlocal ul=-1
   keepj cal append(line('.'), s:dependencies)
+  let custom_depend = leetcode#lang#cpp#getCustomDependencies()
+  let custom_depend_begin_line = search(s:dependencies[len(s:dependencies) - 3])
+  keepj cal append(custom_depend_begin_line, custom_depend)
   exe 'setlocal ul='.old_ul
   retu 1
 endfu
