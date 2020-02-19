@@ -1,14 +1,13 @@
 "" API {{{1
 fu! leetcode#utils#judgeCode#test(leetcode_cmd)
-  retu leetcode#utils#judgeCode#testOrSubmit(a:leetcode_cmd)
+  cal leetcode#utils#judgeCode#testOrSubmit(a:leetcode_cmd)
 endfu
 
 fu! leetcode#utils#judgeCode#submit(leetcode_cmd)
-  retu leetcode#utils#judgeCode#testOrSubmit(a:leetcode_cmd)
+  cal leetcode#utils#judgeCode#testOrSubmit(a:leetcode_cmd)
 endfu
 
 fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
-  let error = 0
   sil w
   "" Commenting the dependencies to avoid a compilation error during a test or
   "" submission of the current code file
@@ -20,8 +19,7 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
     let test_result = system(a:leetcode_cmd)
     redraw | cal s:displayTestOrSubmitResult(test_result) 
   cat /.*/
-    echoe '[' .g:leetcode_name .'] Error in code judgement.'
-    error = -1
+    throw 'Error in code judgement.'
   finally
     cal leetcode#lang#utils#uncommentDependencies()
     try
@@ -35,7 +33,6 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
     cal system('rm "' .g:leetcode_undo_history_path .'"')
     cal leetcode#lang#utils#foldDependencies()
     exe 'keepj norm! ' .current_line .'G'
-    retu error
   endt
 endfu
 
