@@ -5,6 +5,64 @@ fu! leetcode#utils#accessFiles#buildDataContainer()
   endif
 endfu
 
+"" Last Did Code Files for Diff Qs {{{2
+fu! leetcode#utils#accessFiles#buildLastDidCodeFilesDir()
+  cal leetcode#utils#accessFiles#buildDataContainer()
+  if !isdirectory(g:leetcode_last_did_code_files_dir_path)
+    cal system('mkdir "' .g:leetcode_last_did_code_files_dir_path .'"')
+  endif
+endfu
+
+fu! leetcode#utils#accessFiles#getLastDidCodeFilePath(Q_fullname)
+  retu g:leetcode_last_did_code_files_dir_path .g:leetcode_path_delimit .a:Q_fullname
+endfu
+
+fu! leetcode#utils#accessFiles#lastDidCodeFileStorageExists(Q_fullname)
+  retu filereadable(leetcode#utils#accessFiles#getLastDidCodeFilePath(a:Q_fullname))
+endfu
+
+fu! leetcode#utils#accessFiles#buildLastDidCodeFileStorage(Q_fullname)
+  cal leetcode#utils#accessFiles#buildLastDidCodeFilesDir()
+  let storage_path = g:leetcode_last_did_code_files_dir_path .g:leetcode_path_delimit .a:Q_fullname
+  if !filereadable(storage_path)
+    cal system('touch "' .storage_path .'"')
+  endif
+  retu storage_path
+endfu
+
+fu! leetcode#utils#accessFiles#appendTextToLastDidCodeFileStorage(Q_fullname, text)
+  let storage_path = leetcode#utils#accessFiles#buildLastDidCodeFileStorage(a:Q_fullname)
+  "" Append text in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
+  cal system('echo "' .escape(a:text, '"') .'" >> "' .storage_path .'"')
+endfu
+
+fu! leetcode#utils#accessFiles#clearLastDidCodeFileStorage(Q_fullname)
+  let storage_path = leetcode#utils#accessFiles#buildLastDidCodeFileStorage(a:Q_fullname)
+  "" clear in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
+  cal system(' > "' .storage_path .'"')
+endfu
+
+fu! leetcode#utils#accessFiles#writeLastDidCodeFileInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
+  cal leetcode#utils#accessFiles#clearLastDidCodeFileStorage(a:Q_fullname)
+  cal leetcode#utils#accessFiles#appendTextToLastDidCodeFileStorage(a:Q_fullname, 'destination_dir_path: "' .a:destination_dir_path .'"')
+  cal leetcode#utils#accessFiles#appendTextToLastDidCodeFileStorage(a:Q_fullname, 'Q_filepath: "' .a:Q_filepath .'"')
+  cal leetcode#utils#accessFiles#appendTextToLastDidCodeFileStorage(a:Q_fullname, 'code_filename: "' .a:code_filename .'"')
+  cal leetcode#utils#accessFiles#appendTextToLastDidCodeFileStorage(a:Q_fullname, 'code_filepath: "' .a:code_filepath .'"')
+endfu
+
+"" @return  [destination_dir_path, Q_filepath, code_filename, code_filepath]
+fu! leetcode#utils#accessFiles#readLastDidCodeFileInfo(Q_fullname)
+  let info = []
+  exe 'sil e! ' .leetcode#utils#accessFiles#getLastDidCodeFilePath(a:Q_fullname)
+  cal add(info, substitute(getline(search('destination_dir_path: "')), 'destination_dir_path: "\|"$', '', 'g'))
+  cal add(info, substitute(getline(search('Q_filepath: "')), 'Q_filepath: "\|"$', '', 'g'))
+  cal add(info, substitute(getline(search('code_filename: "')), 'code_filename: "\|"$', '', 'g'))
+  cal add(info, substitute(getline(search('code_filepath: "')), 'code_filepath: "\|"$', '', 'g'))
+  b #
+  bd! #
+  retu info
+endfu
+
 "" Last Downloaded Question {{{2
 fu! leetcode#utils#accessFiles#buildLastDownQStorage()
   cal leetcode#utils#accessFiles#buildDataContainer()

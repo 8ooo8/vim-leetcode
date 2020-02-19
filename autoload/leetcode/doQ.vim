@@ -24,34 +24,45 @@ fu! leetcode#doQ#doQ(...)
     cat /.*/
       try | let Q_fullname = s:getQFullNameFromLeetcodeServer(a:1) | endt
     endt
-    let destination_dir_path = root_path .g:leetcode_path_delimit .Q_fullname
-    let Q_filename = 'Q.txt'
-    let Q_filepath = destination_dir_path .g:leetcode_path_delimit .Q_filename
-    "" Download the question and the code template if needed
-    let existing_code_filenames = leetcode#utils#accessFiles#allCodeFiles(Q_fullname)
-    if a:0 == 2
-      if a:2 =~ '\.' .leetcode#lang#utils#getExt() .'$'
-        let code_filename = a:2
-      el
-        let code_filename = a:2 .'.' .leetcode#lang#utils#getExt()
-      en
+    if a:0 == 1 && leetcode#utils#accessFiles#lastDidCodeFileStorageExists(Q_fullname)
+      let [destination_dir_path, Q_filepath, code_filename, code_filepath] = 
+            \leetcode#utils#accessFiles#readLastDidCodeFileInfo(Q_fullname)
+      let need_to_down = 0
+      if !filereadable(code_filepath)
+        throw 'The last did code file for this question cannot be found.'
+      endif
     endif
-    let need_to_down = (a:0 == 2 && index(existing_code_filenames, code_filename) < 0) || len(existing_code_filenames) == 0
-    if need_to_down
-      let down_result = s:downQ(destination_dir_path, Q_fullname, a:1, Q_filename, (exists('code_filename') ? code_filename : ''))
-      echom '[' .g:leetcode_name .'] Question and code file downloaded.'
-    en
-    "" Determine code_filename if it is not yet determined
-    if !exists('code_filename')
-      let code_filename = leetcode#utils#accessFiles#allCodeFiles(Q_fullname)[0]
-    en
-    let code_filepath = destination_dir_path .g:leetcode_path_delimit .code_filename
+    if !exists('destination_dir_path') && !exists('Q_filepath') && !exists('code_filename') && !exists('code_filepath')
+      let destination_dir_path = root_path .g:leetcode_path_delimit .Q_fullname
+      let Q_filename = 'Q.txt'
+      let Q_filepath = destination_dir_path .g:leetcode_path_delimit .Q_filename
+      "" Download the question and the code template if needed
+      let existing_code_filenames = leetcode#utils#accessFiles#allCodeFiles(Q_fullname)
+      if a:0 == 2
+        if a:2 =~ '\.' .leetcode#lang#utils#getExt() .'$'
+          let code_filename = a:2
+        el
+          let code_filename = a:2 .'.' .leetcode#lang#utils#getExt()
+        en
+      endif
+      let need_to_down = (a:0 == 2 && index(existing_code_filenames, code_filename) < 0) || len(existing_code_filenames) == 0
+      if need_to_down
+        let down_result = s:downQ(destination_dir_path, Q_fullname, a:1, Q_filename, (exists('code_filename') ? code_filename : ''))
+        echom '[' .g:leetcode_name .'] Question and code file downloaded.'
+      en
+      "" Determine code_filename if it is not yet determined
+      if !exists('code_filename')
+        let code_filename = leetcode#utils#accessFiles#allCodeFiles(Q_fullname)[0]
+      en
+      let code_filepath = destination_dir_path .g:leetcode_path_delimit .code_filename
 
-    if need_to_down
-      cal leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
+      if need_to_down
+        cal leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
+      en
     en
     
     let viewResult = s:viewQandCodeFiles(need_to_down, destination_dir_path, Q_filepath, code_filename, code_filepath)
+    cal leetcode#utils#accessFiles#writeLastDidCodeFileInfo(Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath)
     echom '[' .g:leetcode_name .'] "' .Q_fullname . g:leetcode_path_delimit .code_filename .'" loaded.'
     retu 1
   cat /.*/ | echoe '[' .g:leetcode_name .'] ' .v:exception | endt
