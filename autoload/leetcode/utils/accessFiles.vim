@@ -34,7 +34,7 @@ fu! leetcode#utils#accessFiles#writeLastDownQInfo(Q_fullname, destination_dir_pa
   cal leetcode#utils#accessFiles#appendTextToLastDownQStorage('code_filepath: "' .a:code_filepath .'"')
 endfu
 
-"" @return  [destination_dir_path, Q_filepath, code_filename, code_filepath]
+"" @return  [Q_fullname, destination_dir_path, Q_filepath, code_filename, code_filepath]
 fu! leetcode#utils#accessFiles#readLastDownQInfo()
   let info = []
   exe 'sil e! ' .g:leetcode_last_down_Q_data_path

@@ -19,6 +19,13 @@ fu! leetcode#renameCodeFile#renameCurrentCodeFile(newname)
     sil bw! #
     cal system('rm "' .old_code_filepath .'"')
     echo '[' .g:leetcode_name .'] Renamed from "' .old_code_filename .'" to "' .newname .'".'
+    "" Update the info about the last downloaded Q if needed
+    let [LDQ_Q_fullname, LDOQ_destination_dir_path, LDOQ_Q_filepath, LDOQ_code_filename, LDOQ_code_filepath] = 
+          \leetcode#utils#accessFiles#readLastDownQInfo()
+    if resolve(LDOQ_code_filepath) == old_code_filepath
+      cal leetcode#utils#accessFiles#writeLastDownQInfo(LDQ_Q_fullname, LDOQ_destination_dir_path, LDOQ_Q_filepath, 
+            \newname, new_code_filepath)
+    en
     retu 1
   cat /.*/ | throw v:exception | endt
 endfu
