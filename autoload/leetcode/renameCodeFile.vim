@@ -20,12 +20,20 @@ fu! leetcode#renameCodeFile#renameCurrentCodeFile(newname)
     cal system('rm "' .old_code_filepath .'"')
     echo '[' .g:leetcode_name .'] Renamed from "' .old_code_filename .'" to "' .newname .'".'
     "" Update the info about the last downloaded Q if needed
-    let [LDQ_Q_fullname, LDOQ_destination_dir_path, LDOQ_Q_filepath, LDOQ_code_filename, LDOQ_code_filepath] = 
+    let [LDQ_Q_fullname, LDQ_destination_dir_path, LDQ_Q_filepath, LDQ_code_filename, LDQ_code_filepath] = 
           \leetcode#utils#accessFiles#readLastDownQInfo()
-    if resolve(LDOQ_code_filepath) == old_code_filepath
-      cal leetcode#utils#accessFiles#writeLastDownQInfo(LDQ_Q_fullname, LDOQ_destination_dir_path, LDOQ_Q_filepath, 
+    if resolve(LDQ_code_filepath) == old_code_filepath
+      cal leetcode#utils#accessFiles#writeLastDownQInfo(LDQ_Q_fullname, LDQ_destination_dir_path, LDQ_Q_filepath, 
             \newname, new_code_filepath)
     en
+    "" Update the info about the last did code file for this question if needed
+    let Q_fullname = expand('%:p:h:t')
+    let [LDC_destination_dir_path, LDC_Q_filepath, LDC_code_filename, LDC_code_filepath] =
+          \leetcode#utils#accessFiles#readLastDidCodeFileInfo(Q_fullname)
+    if resolve(LDC_code_filepath) == old_code_filepath
+      cal leetcode#utils#accessFiles#writeLastDidCodeFileInfo(Q_fullname, LDC_destination_dir_path, LDC_Q_filepath,
+            \newname, new_code_filepath)
+    endif
     retu 1
   cat /.*/ | throw v:exception | endt
 endfu
