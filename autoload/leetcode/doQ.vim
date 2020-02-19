@@ -192,6 +192,7 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
       exe 'norm! `.' 
     cat /E20\|E19/ | cal leetcode#lang#utils#goToWhereCodeBegins()
     endt
+    norm! zz
 
     if g:leetcode_autoinsert
       star
