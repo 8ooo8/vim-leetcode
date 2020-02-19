@@ -138,7 +138,7 @@ fu! s:getDidQFullname(did_Q_partialname)
         retu did_Q
       endif
     endfor
-  elseif a:did_Q_partialname =~ '\s*\d\+\s*' 
+  elseif a:did_Q_partialname =~ '^\s*\d\+\s*$' 
     "" when a:did_Q_partialname is in a form of "ID"
     cal map(all_did_Q, {key, val -> matchstr(val, '\[\zs\d\+\ze\]')})
     let idx = index(all_did_Q, matchstr(a:did_Q_partialname, '\s*\zs\d\+\ze\s*'))
