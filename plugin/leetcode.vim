@@ -23,8 +23,8 @@ let g:loaded_leetcode = 1
 
 "" Set Default Values {{{1
 if !exists('g:leetcode_lang') | let g:leetcode_lang = 'cpp' | en
-if !exists('g:leetcode_viewQ') | let g:leetcode_viewQ = 1 | en
-if !exists('g:leetcode_autoinsert') | let g:leetcode_autoinsert = 1 | en
+if !exists('g:leetcode_view_Q') | let g:leetcode_view_Q = 1 | en
+if !exists('g:leetcode_auto_insert') | let g:leetcode_auto_insert = 1 | en
 "" "g:leetcode_root_dir": if it does not exist, pwd will be used
 
 "" Initialize {{{1

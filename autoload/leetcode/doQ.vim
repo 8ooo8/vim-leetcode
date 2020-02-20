@@ -182,7 +182,7 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
       exe 'sil e! ' .fnameescape(a:code_filepath)
     endif
 
-    if g:leetcode_viewQ
+    if g:leetcode_view_Q
       try | exe 'sil bd!' .fnameescape(a:Q_filepath) 
       cat /.*/ | endt
       vs
@@ -190,7 +190,7 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
       if a:new_down | cal s:RemoveHTMLTagsInCurrentQFile() | sil w | en
       exe 'lcd ' .fnameescape(a:destination_dir_path)
       wincmd p
-    elseif !g:leetcode_viewQ && a:new_down
+    elseif !g:leetcode_view_Q && a:new_down
       exe 'sil e ' .a:Q_filepath
       cal s:RemoveHTMLTagsInCurrentQFile() | sil w
       b # | bd #
@@ -208,7 +208,7 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
     endt
     norm! zz
 
-    if g:leetcode_autoinsert
+    if g:leetcode_auto_insert
       star
     en
 
