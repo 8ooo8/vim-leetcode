@@ -50,15 +50,12 @@ Plug 'ben_coder/leetcode'
   - Question files all are named as "Q.txt".
   - Code files may have custom names.
 - Usages:
-  - [ ] `[Question ID or Name]`
-  - [ ] `[Code Filename]`
+  - (1) `LdoQ`
     - **Load the last downloaded code file** (and its corresponding question file in a split window).
-  - [x] `[Question ID or Name]`
-  - [ ] `[Code Filename]`
+  - (2) `LdoQ Question-ID-or-Name`
     - **Load the last code file being opened by command `LdoQ`** for the specified question (and its corresponding question file in a split window).
     - **If no such file, download the question file and its code template** to open. The code file will have the default code template name given by [leetcode-cli][leetcode-cli-repo].
-  - [x] `[Question ID or Name]`
-  - [x] `[Code Filename]`
+  - (3) `LdoQ Question-ID-or-Name Code-Filename`
     - **Load the specified code file** (and its corresponding question file in a split window).
     - **If no such file, download the question file and its code template** to open. The code file will be named as `[Code Filename]`.
   - Press **`<Tab>` to auto complete the parameters by the existing question and code files**; **`<C-d>` to list the available options** for the parameters.
@@ -141,7 +138,6 @@ let g:leetcode_auto_insert = 1
 ## License
 [MIT][MIT-license]
 
-[demo-video]: ./demo.gif
 [MIT-license]: ./LICENSE
 
 [cygwin]: https://www.cygwin.com/
