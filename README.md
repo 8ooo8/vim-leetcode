@@ -18,7 +18,7 @@ For your reference, in an Unix-like system:
 ```bash
 mkdir -p ~/.vim/plugged
 cd ~/.vim/plugged
-git clone https://gitlab.com/ben_coder/leetcode.git
+git clone https://github.com/o0o08/leetcode.git
 ```
 
 In ~/.vimrc, add below statement.
