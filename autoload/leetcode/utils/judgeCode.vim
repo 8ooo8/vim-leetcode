@@ -13,15 +13,19 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   "" submission of the current code file
   let current_line = line('.')
   exe 'sil wundo! ' .fnameescape(g:leetcode_undo_history_path)
-  cal leetcode#lang#utils#commentDependencies()
+  cal leetcode#lang#utils#commentDependencies() | sil w!
+  let commented = 1
   try 
     echoh None | ec '[' .g:leetcode_name .'] Loading ...'
     let test_result = system(a:leetcode_cmd)
+    cal leetcode#lang#utils#uncommentDependencies() | sil w! | let commented = 0
     redraw | cal s:displayTestOrSubmitResult(test_result) 
   cat /.*/
     throw 'Error in code judgement.'
   finally
-    cal leetcode#lang#utils#uncommentDependencies()
+    if commented
+      cal leetcode#lang#utils#uncommentDependencies() | sil w! | let commented = 0
+    en
     try
       exe 'sil rundo ' .fnameescape(g:leetcode_undo_history_path)
     cat /E822/ ""when empty undo history
