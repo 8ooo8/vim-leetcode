@@ -32,7 +32,7 @@ set runtimepath^=~/.vim/plugged/leetcode
 For example, with manager "vim-plug":
 
 ```vim
-Plug 'ben_coder/leetcode'
+Plug 'o0o08/leetcode'
 ```
 
 ## Commands
