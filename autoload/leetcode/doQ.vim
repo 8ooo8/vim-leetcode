@@ -208,7 +208,7 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
     norm! zz
 
     if g:leetcode_auto_insert
-      star
+      star!
     en
 
     retu 1
