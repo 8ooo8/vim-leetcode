@@ -69,7 +69,7 @@ fu! leetcode#doQ#doQ(...)
 endfu
 
 fu! leetcode#doQ#completeCmdArgs(arg_lead, cmd_line, cursor_pos)
-  try
+  "" try
     let cmd_and_arg_list = leetcode#utils#cmd#getCmdAndArgList(a:cmd_line)
     if len(cmd_and_arg_list) == 2
       ""complete by "the did questions"
@@ -84,7 +84,7 @@ fu! leetcode#doQ#completeCmdArgs(arg_lead, cmd_line, cursor_pos)
       cal filter(code_filenames, {key, val -> val =~? escape(a:arg_lead, '\[]')})
       retu code_filenames
     endif
-  cat /.*/ | endt
+  "" cat /.*/ | endt
 endfu
 
 "" Local Var & Functions {{{1
@@ -137,32 +137,31 @@ fu! s:loadLastDownQ()
   cat /.*/ | throw 'Error in loading the last downloaded question and code file.' | endt
 endfu
 
-fu! s:getDidQFullname(did_Q_partialname)
-  "" a:did_Q_partialname is supposed to be in either one of the following 3 forms:
-  "" (1) "[ID] Name". Partial match.
-  "" (2) "ID". Complete match to avoid the ambiguity problem.
-  "" (3) "Name". Complete match to avoid the ambiguity problem.
+fu! s:getDidQFullname(did_Q_ID_Name)
+  "" a:did_Q_ID_Name is supposed to be in either one of the following 3 forms:
+  "" (1) "[ID] Name". 
+  "" (2) "ID". 
+  "" (3) "Name".
   let root_path = leetcode#utils#path#getRootDir()
   let all_did_Q = leetcode#utils#accessFiles#allDidQ()
-  if a:did_Q_partialname =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
-    "" when a:did_Q_partialname is in a form of "[ID] Name"
-    let escaped_Q_partialname = escape(a:did_Q_partialname, '[]')
-    for did_Q in all_did_Q
-      if did_Q =~? escaped_Q_partialname
-        retu did_Q
-      endif
-    endfor
-  elseif a:did_Q_partialname =~ '^\s*\d\+\s*$' 
-    "" when a:did_Q_partialname is in a form of "ID"
+  if a:did_Q_ID_Name =~? '\[\d\+\]\([ a-zA-Z0-9]\)\+'
+    "" when a:did_Q_ID_Name is in a form of "[ID] Name"
+    cal map(all_did_Q, {key, val -> tolower(val)})
+    let idx = index(all_did_Q, tolower(a:did_Q_ID_Name))
+    if idx >= 0
+      retu leetcode#utils#accessFiles#allDidQ()[idx]
+    endif
+  elseif a:did_Q_ID_Name =~ '^\s*\d\+\s*$' 
+    "" when a:did_Q_ID_Name is in a form of "ID"
     cal map(all_did_Q, {key, val -> matchstr(val, '\[\zs\d\+\ze\]')})
-    let idx = index(all_did_Q, matchstr(a:did_Q_partialname, '\s*\zs\d\+\ze\s*'))
+    let idx = index(all_did_Q, matchstr(a:did_Q_ID_Name, '\s*\zs\d\+\ze\s*'))
     if idx >= 0
       retu leetcode#utils#accessFiles#allDidQ()[idx]
     endif
   el
-    "" when a:did_Q_partialname is in a form of "Name"
-    cal map(all_did_Q, {key, val -> matchstr(val, '\s*\[\d\+\]\s*\zs.*\ze$')})
-    let idx = index(all_did_Q, trim(a:did_Q_partialname))
+    "" when a:did_Q_ID_Name is in a form of "Name"
+    cal map(all_did_Q, {key, val -> tolower(matchstr(val, '\s*\[\d\+\]\s*\zs.*\ze$'))})
+    let idx = index(all_did_Q, trim((a:did_Q_ID_Name)))
     if idx >= 0
       retu leetcode#utils#accessFiles#allDidQ()[idx]
     endif
