@@ -98,8 +98,9 @@ fu! s:downQ(destination_dir_path, Q_fullname, Q_ID_or_name, Q_filename, code_fil
     el
       let Q_ID_or_name = a:Q_ID_or_name
     en
+    let Q_filepath = a:destination_dir_path . g:leetcode_path_delimit .a:Q_filename
     cal system('leetcode show -g -l ' .g:leetcode_lang .' -o "' .a:destination_dir_path .'" "'
-          \.Q_ID_or_name .'" > "' .a:destination_dir_path . g:leetcode_path_delimit .a:Q_filename .'"')
+          \.Q_ID_or_name .'"'.(filereadable(resolve(Q_filepath)) ? '' : ' > "' .Q_filepath .'"'))
 
     "" if the code filename is specified, change the name of the downloaded question
     "" accordingly
@@ -170,7 +171,6 @@ fu! s:getDidQFullname(did_Q_ID_Name)
 endfu
 
 fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filename, code_filepath)
-  try
     exe 'lcd ' .fnameescape(a:destination_dir_path)
     sil on!
 
@@ -212,9 +212,6 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
     en
 
     retu 1
-  cat /.*/
-    throw 'Error in loading the requested question.'
-  endt
 endf
 
 fu! s:getQFullNameFromLeetcodeServer(Q_ID_or_name)
