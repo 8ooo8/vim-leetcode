@@ -2,7 +2,7 @@
 fu! leetcode#testCode#testCode(...)
   try
     if a:0 >= 2
-      throw ':Ltest [One Test Case]'
+      throw ':Ltest [Test Case]'
     endif
 
     if a:0 == 1
