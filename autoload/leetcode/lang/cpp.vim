@@ -54,7 +54,7 @@ fu! leetcode#lang#cpp#addDependencies()
   endt
   "" Add dependencies and make it non-undoable
   let old_ul = &ul
-  setlocal ul=-1
+  setl ul=-1
   keepj cal append(line('.'), s:dependencies)
   let custom_depend = leetcode#lang#cpp#getCustomDependencies()
   let custom_depend_begin_line = search(s:dependencies[len(s:dependencies) - 3])
@@ -64,7 +64,7 @@ fu! leetcode#lang#cpp#addDependencies()
 endfu
 
 fu! leetcode#lang#cpp#foldDependencies()
-  set foldmethod=manual
+  setl foldmethod=manual
   try 
     keepj norm! gg
     let first_fold_line = search(escape(s:dependencies[0], '/*[]'))
