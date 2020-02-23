@@ -2,6 +2,10 @@
 
 A Leetcode question and code file manager in Vim.
 
+![Video demo][video-demo]
+
+This plugin provides a file structure as shown in the demo. It also keeps track of your cursor position, provides a necessary assistance in making syntax checking plugins such as "syntastic" works, etc. Though this plugin moves around in and edits your leetcode code files, the undo history, search history, change list and jump list are not polluted. Therefore, built-in mappings such as `g;`, `<C-o>` and `u` still work great.
+
 ## Requirement
 
 - POSIX shell commands. Windows users may need to install tools such as [cygwin].
@@ -84,7 +88,7 @@ Plug 'o0o08/leetcode'
 ```
 
 - **Test the code file in the current window** with the `[Test Case]`; with default test case if `[Test Case]` omitted.
-- Before submitting the code to test, this command makes the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) commented to avoid an influence to the test. Upon the finish of the test, the code is uncommented. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
+- Before submitting the code to test, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the test. Upon the finish of the test, the code is uncommented. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
 
 ### The `Lsumbit` command
 
@@ -93,7 +97,7 @@ Plug 'o0o08/leetcode'
 ```
 
 - **Sumbit the code file in the current window**
-- Before submitting the code, this command makes the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) commented to avoid an influence to the submission. Upon the finish of the submission, the code is uncommented. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
+- Before submitting the code, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the submission. Upon the finish of the submission, the code is uncommented. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
 
 ## Options
 
@@ -131,14 +135,15 @@ let g:leetcode_view_Q = 1
 let g:leetcode_auto_insert = 1
 ```
 
-- Set **1 to automatically enter insert mode after loading a code file** using command `LdoQ`; 0 to turn this off.
+- Set **1 to automatically enter insert mode after loading a code file** using command `LdoQ` (like auto pressing `a` to enter insert mode); 0 to turn this off.
 - Default value: 1
 
 
 ## License
 [MIT][MIT-license]
 
-[MIT-license]: ./LICENSE
+[MIT-license]: LICENSE
+[video-demo]: docs/screenshots/v0.1.0/demo.gif
 
 [cygwin]: https://www.cygwin.com/
 [leetcode-cli-obsolete-repo]: https://github.com/skygragon/leetcode-cli
