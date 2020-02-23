@@ -208,7 +208,15 @@ fu! s:viewQandCodeFiles(new_down, destination_dir_path, Q_filepath, code_filenam
     norm! zz
 
     if g:leetcode_auto_insert
-      star!
+      let current_col = col('.')
+      norm! $
+      let last_col = col('.')
+      if current_col == last_col
+        star! "" works like 'A' in normal mode
+      el
+        cal cursor(line('.'), current_col + 1)
+        star ""works like 'i' in normal mode
+      endif
     en
 
     retu 1
