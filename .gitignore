@@ -1,9 +1,11 @@
 *~
 .session.vim
 *.swp
+*.swo
 test/
 TODO
 data/
 log/
-mp4/
+*.mov
+*.mp4
 vim-markdown-preview.html
