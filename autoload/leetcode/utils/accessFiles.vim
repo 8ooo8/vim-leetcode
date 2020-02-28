@@ -18,6 +18,10 @@ fu! leetcode#utils#accessFiles#appendTextToLastRunResultStorage(text)
   cal system('echo "' .escape(a:text, '"') .'" >> "' .g:leetcode_last_run_result_path .'"')
 endfu
 
+fu! leetcode#utils#accessFiles#readLastRunResult()
+  return system('cat "' .g:leetcode_last_run_result_path .'"')
+endfu
+
 fu! leetcode#utils#accessFiles#clearLastRunResultStorage()
   cal leetcode#utils#accessFiles#buildLastRunResultStorage()
   "" clear in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
