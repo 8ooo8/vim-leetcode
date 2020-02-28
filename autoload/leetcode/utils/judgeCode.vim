@@ -19,7 +19,7 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
     echoh None | ec '[' .g:leetcode_name .'] Loading ...'
     let test_result = system(a:leetcode_cmd)
     cal leetcode#lang#utils#uncommentDependencies() | sil w! | let commented = 0
-    redraw | cal s:displayTestOrSubmitResult(test_result) 
+    redraw | cal leetcode#utils#judgeCode#displayTestOrSubmitResult(test_result) 
   cat /.*/
     throw 'Error in code judgement.'
   finally
@@ -40,9 +40,7 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   endt
 endfu
 
-
-"" Local Var & Functions {{{1
-fu! s:displayTestOrSubmitResult(result)
+fu! leetcode#utils#judgeCode#displayTestOrSubmitResult(result)
   "" Sample output 1 of the test command of 'leetcode-cli' in list form
   "" ['- Downloading valid-number', '- Sending code to judge', '- Waiting for judge result', 
   "" '- Waiting for judge result', '- Waiting for judge result', '- Waiting for judge result',
