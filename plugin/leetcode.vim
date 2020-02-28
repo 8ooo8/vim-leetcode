@@ -35,3 +35,4 @@ com! -nargs=* -complete=customlist,leetcode#doQ#completeCmdArgs LdoQ cal leetcod
 com! -nargs=* LrenameCodeFile cal leetcode#renameCodeFile#renameCodeFile(<f-args>)
 com! -nargs=* Ltest cal leetcode#testCode#testCode(<q-args>)
 com! -nargs=* Lsubmit cal leetcode#submitCode#submitCode(<f-args>)
+com! -nargs=* LprintLastRunResult cal leetcode#printLastRunResult#printLastRunResult(<f-args>)
