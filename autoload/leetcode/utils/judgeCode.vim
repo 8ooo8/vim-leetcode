@@ -18,6 +18,8 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
   try 
     echoh None | ec '[' .g:leetcode_name .'] Loading ...'
     let test_result = system(a:leetcode_cmd)
+    cal leetcode#utils#accessFiles#clearLastRunResultStorage()
+    cal leetcode#utils#accessFiles#appendTextToLastRunResultStorage(test_result)
     cal leetcode#lang#utils#uncommentDependencies() | sil w! | let commented = 0
     redraw | cal leetcode#utils#judgeCode#displayTestOrSubmitResult(test_result) 
   cat /.*/
