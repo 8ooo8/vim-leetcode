@@ -96,8 +96,14 @@ Plug 'o0o08/leetcode'
 :Lsubmit
 ```
 
-- **Sumbit the code file in the current window**
+- **Sumbit the code file in the current window**.
 - Before submitting the code, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the submission. Upon the finish of the submission, the code is uncommented. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
+
+### The `LprintLastRunResult` command
+```
+:LprintLastRunResult
+```
+- **Show the last successful test or successful submit result**.
 
 ## Options
 
