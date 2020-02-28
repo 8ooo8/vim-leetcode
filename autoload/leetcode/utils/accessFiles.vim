@@ -5,6 +5,25 @@ fu! leetcode#utils#accessFiles#buildDataContainer()
   endif
 endfu
 
+"" Last Test/Submit result {{{2
+fu! leetcode#utils#accessFiles#buildLastRunResultStorage()
+  if !filereadable(g:leetcode_last_run_result_path)
+    cal system('touch "' .g:leetcode_last_down_Q_data_path .'"')
+  endif
+endfu
+
+fu! leetcode#utils#accessFiles#appendTextToLastRunResultStorage(text)
+  cal leetcode#utils#accessFiles#buildLastRunResultStorage()
+  "" Append text in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
+  cal system('echo "' .escape(a:text, '"') .'" >> "' .g:leetcode_last_run_result_path .'"')
+endfu
+
+fu! leetcode#utils#accessFiles#clearLastRunResultStorage()
+  cal leetcode#utils#accessFiles#buildLastRunResultStorage()
+  "" clear in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
+  cal system(' > "' .g:leetcode_last_run_result_path .'"')
+endfu
+
 "" Last Did Code Files for Diff Qs {{{2
 fu! leetcode#utils#accessFiles#buildLastDidCodeFilesDir()
   cal leetcode#utils#accessFiles#buildDataContainer()

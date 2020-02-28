@@ -10,6 +10,7 @@ fu! leetcode#utils#path#init()
   let g:leetcode_last_down_Q_data_path = g:leetcode_data_path .g:leetcode_path_delimit .'last_down_Q'
   let g:leetcode_undo_history_path = g:leetcode_data_path .g:leetcode_path_delimit .'tmp_undo_history'
   let g:leetcode_last_did_code_files_dir_path = g:leetcode_data_path .g:leetcode_path_delimit .'last_did_code_files'
+  let g:leetcode_last_run_result_path = g:leetcode_data_path .g:leetcode_path_delimit .'last_run_result'
 endfu
 
 fu! leetcode#utils#path#getRootDir()
