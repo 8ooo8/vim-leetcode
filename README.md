@@ -103,7 +103,7 @@ Plug 'o0o08/leetcode'
 ```
 :LprintLastRunResult
 ```
-- **Show the last successful test or successful submit result**.
+- **Show the last successful [`test`](#the-ltest-command) or successful [`submit`](#the-lsumbit-command) result**.
 
 ## Options
 
