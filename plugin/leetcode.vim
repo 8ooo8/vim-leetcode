@@ -1,17 +1,24 @@
 "" Version: 0.2.0
-"" Usage:
-"" This is tiny plugin which allows users quickly downloading and writing for 
-"" leetcode questions. 
+"" Description:
+"" This is a leetcode question and code file manager. It allows a quick 
+"" download, load, test and submission of leetcode questions. The file 
+"" structure this plugin provides puts the leetcode files for each question 
+"" in each corresponding directory with name in form of 
+"" "[Question-ID] Question-Name". It also provides a necessary assistance to 
+"" make syntax checking plugins, such as "syntastic", work; it keeps track of
+"" the users' cursor position so that the users can immediately go back to 
+"" where they left in the last loading of this question; ...
 "" Requirements:
 "" 1. Installed "leetcode-cli".
 ""    See "https://github.com/leetcode-tools/leetcode-cli".
-"" 2. Supporting basic unix shell comaands.
+"" 2. Supporting POSIX shell comands.
+"" License: MIT
 
 let g:leetcode_name = 'vim-leetcode'
 
 "" Check Compatiblity and Load Plugin {{{1
-if v:version < 700
-  echoe '[' .g:leetcode_name .']: Please update your vim to a verion 7 or higher.'
+if v:version < 800
+  echoe '[' .g:leetcode_name .']: Please update your vim to a verion 8 or higher.'
   fini
 en
 if has('win32unix') || has('win16') || has('win32') || has('win64')
