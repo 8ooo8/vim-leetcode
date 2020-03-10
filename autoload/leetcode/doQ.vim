@@ -266,5 +266,8 @@ fu! s:RemoveHTMLTagsInCurrentQFile()
   sil %sm@&gt;@>@ge
   sil %sm@&lt;@<@ge
   sil %sm@@@ge
+  sil %sm@&#39;@'@ge
+  sil %sm@&le;@<=@ge
+  sil %sm@&ge;@>=@ge
   norm! gg
 endf
