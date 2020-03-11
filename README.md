@@ -1,4 +1,4 @@
-# Leetcode
+# vim-leetcode
 
 A Leetcode question and code file manager in Vim.
 
@@ -22,7 +22,7 @@ For your reference, in an Unix-like system:
 ```bash
 mkdir -p ~/.vim/plugged
 cd ~/.vim/plugged
-git clone https://github.com/o0o08/leetcode.git
+git clone https://github.com/8ooo8/leetcode.git
 ```
 
 In ~/.vimrc, add below statement.
@@ -36,7 +36,7 @@ set runtimepath^=~/.vim/plugged/leetcode
 For example, with manager "vim-plug":
 
 ```vim
-Plug 'o0o08/leetcode'
+Plug '8ooo8/leetcode'
 ```
 
 ## Commands
