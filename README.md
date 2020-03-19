@@ -6,6 +6,8 @@ A Leetcode question and code file manager in Vim.
 
 This plugin provides a file structure as shown in the demo. It also keeps track of your cursor position, provides a necessary assistance in making syntax checking plugins such as "syntastic" works, etc. Though this plugin moves around in and edits your leetcode code files, the undo history, search history, change list and jump list are not polluted. Therefore, built-in mappings such as `g;`, `<C-o>` and `u` still work great.
 
+_This is [an example repository][vim-leetcode-example] in which the files are managed using this plugin._
+
 ## Requirement
 
 - POSIX shell commands. Windows users may need to install tools such as [cygwin].
@@ -68,7 +70,7 @@ Plug '8ooo8/leetcode'
     - Case-insensitive.
 - This command edits the newly downloaded code files to make syntax checking apps, such as ["syntastic"][syntastic-repo], work.
 - This command closes all other windows in the current tab.
-- This command changes the present working directory of the window(s), in which the leetcode file(s) load, into directory of the file(s).
+- This command changes the present working directory of the window(s), in which the leetcode file(s) load(s), into the directory of the leetcode file(s).
 - This command moves the cursor to the position of the last change made to the loaded code file. If it is a newly downloaded code file, move the cursor to where users' code starts. Afterwards, depending on the value of [`g:leetcode_auto_insert`](#the-gleetcode_auto_insert-option) possibly automatically enter Insert mode.
 - This command does not pollute the change list, jump list, search history and undo history. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
 
@@ -88,7 +90,7 @@ Plug '8ooo8/leetcode'
 ```
 
 - **Test the code file in the current window** with the `[Test Case]`; with default test case if `[Test Case]` omitted.
-- Before submitting the code to test, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the test. Upon the finish of the test, the code is uncommented. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
+- Before submitting the code to test, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the test. Upon the finish of the test, the code is uncommented and the code file is saved. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
 
 ### The `Lsumbit` command
 
@@ -97,13 +99,26 @@ Plug '8ooo8/leetcode'
 ```
 
 - **Sumbit the code file in the current window**.
-- Before submitting the code, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the submission. Upon the finish of the submission, the code is uncommented. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
+- Before submitting the code, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the submission. Upon the finish of the submission, the code is uncommented and the code file is saved. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
 
 ### The `LprintLastRunResult` command
+
 ```
 :LprintLastRunResult
 ```
 - **Show the last successful [`test`](#the-ltest-command) or successful [`submit`](#the-lsumbit-command) result**.
+
+### The `LupdateREADME` command
+
+```
+:LupdateREADME
+```
+
+- **Update the table of content(see below) in README.md**; if no table found, append a table to README.md.
+  ![Table of content in README.md][README-table-img]
+- The items in the "Question" column are linked to the official web pages showing the same questions and the items in the "Solution" column are linked to their corresponding solution files.
+- The items in the columns "Question", "Difficulty", "Acceptance" and "Solution" are automatically generated, while the rest needs to be input manually.
+- Check this [example][vim-leetcode-example].
 
 ## Options
 
@@ -149,6 +164,7 @@ let g:leetcode_auto_insert = 1
 [MIT][MIT-license]
 
 [MIT-license]: LICENSE
+[README-table-img]: docs/screenshots/v0.3.0/README_table.png
 [video-demo]: docs/screenshots/v0.1.0/demo.gif
 
 [cygwin]: https://www.cygwin.com/
@@ -156,4 +172,5 @@ let g:leetcode_auto_insert = 1
 [leetcode-cli-plugin-tutorial]: https://skygragon.github.io/leetcode-cli/commands#plugin
 [leetcode-cli-repo]: https://github.com/leetcode-tools/leetcode-cli/
 [syntastic-repo]: https://github.com/vim-syntastic/syntastic
+[vim-leetcode-example]: https://github.com/8ooo8/algo-practices/tree/master/leetcode
 
