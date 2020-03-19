@@ -118,7 +118,7 @@ Plug '8ooo8/leetcode'
   ![Table of content in README.md][README-table-img]
 - The items in the "Question" column are linked to the official web pages showing the same questions and the items in the "Solution" column are linked to their corresponding solution files.
 - The items in the columns "Question", "Difficulty", "Acceptance" and "Solution" are automatically generated, while the rest needs to be input manually.
-- Check this [example][vim-leetcode-example].
+- Check this [example][vim-leetcode-example] for a clearer view of this command.
 
 ## Options
 
