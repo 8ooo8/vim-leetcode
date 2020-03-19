@@ -1,4 +1,4 @@
-"" Version: 0.2.0
+"" Version: 0.3.0
 "" Description:
 "" This is a leetcode question and code file manager. It allows a quick 
 "" download, load, test and submission of leetcode questions. The file 
@@ -43,3 +43,4 @@ com! -nargs=* LrenameCodeFile cal leetcode#renameCodeFile#renameCodeFile(<f-args
 com! -nargs=* Ltest cal leetcode#testCode#testCode(<q-args>)
 com! -nargs=* Lsubmit cal leetcode#submitCode#submitCode(<f-args>)
 com! -nargs=* LprintLastRunResult cal leetcode#printLastRunResult#printLastRunResult(<f-args>)
+com! -nargs=* LupdateREADME cal leetcode#updateREADME#updateREADME(<f-args>)
