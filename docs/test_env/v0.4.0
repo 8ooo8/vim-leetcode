@@ -1,0 +1,112 @@
+Test Env 1 {{{1
+>>> VIM {{{2
+VIM - Vi IMproved 8.1 (2018 May 18, compiled Oct 30 2019 23:05:43)
+macOS version
+Included patches: 1-2234
+Compiled by Homebrew
+Huge version with MacVim GUI.  Features included (+) or not (-):
++acl               +file_in_path      +mouse_urxvt       -tcl
++arabic            +find_in_path      +mouse_xterm       +termguicolors
++autocmd           +float             +multi_byte        +terminal
++autochdir         +folding           +multi_lang        +terminfo
+-autoservername    -footer            -mzscheme          +termresponse
++balloon_eval      +fork()            +netbeans_intg     +textobjects
++balloon_eval_term +fullscreen        +num64             +textprop
++browse            -gettext           +odbeditor         +timers
+++builtin_terms    -hangul_input      +packages          +title
++byte_offset       +iconv             +path_extra        +toolbar
++channel           +insert_expand     +perl              +transparency
++cindent           +job               +persistent_undo   +user_commands
++clientserver      +jumplist          +postscript        +vartabs
++clipboard         +keymap            +printer           +vertsplit
++cmdline_compl     +lambda            +profile           +virtualedit
++cmdline_hist      +langmap           -python            +visual
++cmdline_info      +libcall           +python3           +visualextra
++comments          +linebreak         +quickfix          +viminfo
++conceal           +lispindent        +reltime           +vreplace
++cryptv            +listcmds          +rightleft         +wildignore
++cscope            +localmap          +ruby              +wildmenu
++cursorbind        +lua               +scrollbind        +windows
++cursorshape       +menu              +signs             +writebackup
++dialog_con_gui    +mksession         +smartindent       -X11
++diff              +modify_fname      -sound             -xfontset
++digraphs          +mouse             +spell             +xim
++dnd               +mouseshape        +startuptime       -xpm
+-ebcdic            +mouse_dec         +statusline        -xsmp
++emacs_tags        -mouse_gpm         -sun_workshop      -xterm_clipboard
++eval              -mouse_jsbterm     +syntax            -xterm_save
++ex_extra          +mouse_netterm     +tag_binary        
++extra_search      +mouse_sgr         -tag_old_static    
+-farsi             -mouse_sysmouse    -tag_any_white     
+   system vimrc file: "$VIM/vimrc"
+     user vimrc file: "$HOME/.vimrc"
+ 2nd user vimrc file: "~/.vim/vimrc"
+      user exrc file: "$HOME/.exrc"
+  system gvimrc file: "$VIM/gvimrc"
+    user gvimrc file: "$HOME/.gvimrc"
+2nd user gvimrc file: "~/.vim/gvimrc"
+       defaults file: "$VIMRUNTIME/defaults.vim"
+    system menu file: "$VIMRUNTIME/menu.vim"
+  fall-back for $VIM: "/Applications/MacVim.app/Contents/Resources/vim"
+Compilation: clang -c -I. -Iproto -DHAVE_CONFIG_H -DFEAT_GUI_MACVIM -Wall -Wno-unknown-pragmas -pipe  -DMACOS_X -DMACOS_X_DARWIN  -g -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1       
+Linking: clang   -L. -fstack-protector-strong -L/usr/local/lib -L/usr/local/opt/libyaml/lib -L/usr/local/opt/openssl@1.1/lib -L/usr/local/opt/readline/lib -L. -fstack-protector-strong -L/usr/local/lib -L/usr/local/opt/libyaml/lib -L/usr/local/opt/openssl@1.1/lib -L/usr/local/opt/readline/lib  -L/usr/local/lib -o Vim -framework Cocoa -framework Carbon       -lm  -lncurses -liconv -framework AppKit  -L/usr/local/opt/lua/lib -llua5.3 -fstack-protector  -L/System/Library/Perl/5.18/darwin-thread-multi-2level/CORE -lperl  -L/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/config-3.7m-darwin -lpython3.7m -framework CoreFoundation  -lruby.2.6     
+
+>>> MacVim {{{2
+VIM - Vi IMproved 8.1 (2018 May 18, compiled Oct 30 2019 23:05:43)
+macOS version
+Included patches: 1-2234
+Compiled by Homebrew
+Huge version with MacVim GUI.  Features included (+) or not (-):
++acl               +file_in_path      +mouse_urxvt       -tcl
++arabic            +find_in_path      +mouse_xterm       +termguicolors
++autocmd           +float             +multi_byte        +terminal
++autochdir         +folding           +multi_lang        +terminfo
+-autoservername    -footer            -mzscheme          +termresponse
++balloon_eval      +fork()            +netbeans_intg     +textobjects
++balloon_eval_term +fullscreen        +num64             +textprop
++browse            -gettext           +odbeditor         +timers
+++builtin_terms    -hangul_input      +packages          +title
++byte_offset       +iconv             +path_extra        +toolbar
++channel           +insert_expand     +perl              +transparency
++cindent           +job               +persistent_undo   +user_commands
++clientserver      +jumplist          +postscript        +vartabs
++clipboard         +keymap            +printer           +vertsplit
++cmdline_compl     +lambda            +profile           +virtualedit
++cmdline_hist      +langmap           -python            +visual
++cmdline_info      +libcall           +python3           +visualextra
++comments          +linebreak         +quickfix          +viminfo
++conceal           +lispindent        +reltime           +vreplace
++cryptv            +listcmds          +rightleft         +wildignore
++cscope            +localmap          +ruby              +wildmenu
++cursorbind        +lua               +scrollbind        +windows
++cursorshape       +menu              +signs             +writebackup
++dialog_con_gui    +mksession         +smartindent       -X11
++diff              +modify_fname      -sound             -xfontset
++digraphs          +mouse             +spell             +xim
++dnd               +mouseshape        +startuptime       -xpm
+-ebcdic            +mouse_dec         +statusline        -xsmp
++emacs_tags        -mouse_gpm         -sun_workshop      -xterm_clipboard
++eval              -mouse_jsbterm     +syntax            -xterm_save
++ex_extra          +mouse_netterm     +tag_binary        
++extra_search      +mouse_sgr         -tag_old_static    
+-farsi             -mouse_sysmouse    -tag_any_white     
+   system vimrc file: "$VIM/vimrc"
+     user vimrc file: "$HOME/.vimrc"
+ 2nd user vimrc file: "~/.vim/vimrc"
+      user exrc file: "$HOME/.exrc"
+  system gvimrc file: "$VIM/gvimrc"
+    user gvimrc file: "$HOME/.gvimrc"
+2nd user gvimrc file: "~/.vim/gvimrc"
+       defaults file: "$VIMRUNTIME/defaults.vim"
+    system menu file: "$VIMRUNTIME/menu.vim"
+  fall-back for $VIM: "/Applications/MacVim.app/Contents/Resources/vim"
+Compilation: clang -c -I. -Iproto -DHAVE_CONFIG_H -DFEAT_GUI_MACVIM -Wall -Wno-unknown-pragmas -pipe  -DMACOS_X -DMACOS_X_DARWIN  -g -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1       
+Linking: clang   -L. -fstack-protector-strong -L/usr/local/lib -L/usr/local/opt/libyaml/lib -L/usr/local/opt/openssl@1.1/lib -L/usr/local/opt/readline/lib -L. -fstack-protector-strong -L/usr/local/lib -L/usr/local/opt/libyaml/lib -L/usr/local/opt/openssl@1.1/lib -L/usr/local/opt/readline/lib  -L/usr/local/lib -o Vim -framework Cocoa -framework Carbon       -lm  -lncurses -liconv -framework AppKit  -L/usr/local/opt/lua/lib -llua5.3 -fstack-protector  -L/System/Library/Perl/5.18/darwin-thread-multi-2level/CORE -lperl  -L/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/config-3.7m-darwin -lpython3.7m -framework CoreFoundation  -lruby.2.6     
+
+>>> leetcode-cli {{{2
+2.6.22
+
+>>> Mac OS {{{2
+Product Name: Mac OS X
+Product Version: 10.14.6
+Build version: 18G3020

@@ -117,7 +117,8 @@ Plug '8ooo8/leetcode'
 - **Update the table of content(see below) in README.md**; if no table found, append a table to README.md.
   ![Table of content in README.md][README-table-img]
 - The items in the "Question" column are linked to the official web pages showing the same questions and the items in the "Solution" column are linked to their corresponding solution files.
-- The items in the columns "Question", "Difficulty", "Acceptance" and "Solution" are automatically generated, while the rest needs to be input manually.
+- The items in the columns "Question", "Difficulty", "Acceptance" and "Solution" are automatically generated while the rest needs to be input manually.
+- The items are sorted by their acceptance rates.
 - Check this [example][vim-leetcode-example] for a clearer view of this command.
 
 ## Options
@@ -164,7 +165,7 @@ let g:leetcode_auto_insert = 1
 [MIT][MIT-license]
 
 [MIT-license]: LICENSE
-[README-table-img]: docs/screenshots/v0.3.0/README_table.png
+[README-table-img]: docs/screenshots/v0.4.0/README_table.png
 [video-demo]: docs/screenshots/v0.1.0/demo.gif
 
 [cygwin]: https://www.cygwin.com/

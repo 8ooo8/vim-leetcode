@@ -70,6 +70,11 @@ fu! leetcode#updateREADME#updateREADME(...)
       cal remove(readme_content, table_top_line_num, last_tuple_line_num)
     endif
     let prev_Q = ''
+    let tuples_of_table = content_of_table[2:]
+    cal sort(tuples_of_table, {i1, i2 -> 
+          \float2nr(ceil(str2float(i1['c3'][:len(i1['c3']-2)]) - str2float(i2['c3'][:len(i2['c3']-2)])))}) "" sort by acceptance rates
+    cal remove(content_of_table, 2, len(content_of_table) - 1)
+    cal extend(content_of_table, tuples_of_table)
     for row_idx in range(len(content_of_table))
       let row = content_of_table[row_idx]
       if prev_Q == row['c1']
@@ -87,6 +92,8 @@ fu! leetcode#updateREADME#updateREADME(...)
   cat /.*/ | echoe '[' .g:leetcode_name .'] ' .v:exception | endt
 endfu
 
+
+"" Local Var & Functions {{{1
 fu! s:getURL(Q_name)
   return 'https://leetcode.com/problems/' .tolower(substitute(substitute(a:Q_name, '[ -]\+', '-', 'g'), '[^a-zA-Z1-9\-]', '', 'g'))
 endfu
