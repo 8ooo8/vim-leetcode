@@ -23,7 +23,8 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd)
     cal leetcode#lang#utils#uncommentDependencies() | sil w! | let commented = 0
     redraw | cal leetcode#utils#judgeCode#displayTestOrSubmitResult(test_result) 
   cat /.*/
-    throw 'Error in code judgement.'
+    "" throw 'Error in code judgement.'
+    echoe 'rethrow ' .v:exception
   finally
     if commented
       cal leetcode#lang#utils#uncommentDependencies() | sil w! | let commented = 0
@@ -112,6 +113,67 @@ fu! leetcode#utils#judgeCode#displayTestOrSubmitResult(result)
   endfor
   let wrong_ans = (exists('ans') && exists('expected_ans') && ans != expected_ans)
 
+  "" -- v0.4.1 patch --
+  "" concatenating the stdout output, indent input and stdoutput
+  let stdout = ''
+  let reading_stdout = 0
+  let [stdout_start_line_idx, stdout_end_line_idx, stdout_start_posi] = [-1, -1, -1]
+  for line_idx in range(len(extracted_result))
+    let line = extracted_result[line_idx]
+    if reading_stdout
+      if (line =~ '✔' || line =~ '✘') && line =~ '\S\+\s*:'
+        "" end reading stdout
+        let reading_stdout = 0 
+        let stdout_end_line_idx = line - 1
+      el
+        "" concatenate the output; '\n' instead of "\n" is used to keep the string one line
+        "" so that the linewise utility may still works great.
+        let stdout .= line .'\n'
+      endif
+    elseif !reading_stdout && (line =~ '✔' || line =~ '✘') && line =~? 'stdout'
+      "" start reading stdout
+      let stdout_start_line_idx = line_idx
+      let stdout_start_posi = matchend(line, ':\s*')
+      "" retrieve the first part of the stdout output;
+      "" '\n' instead of "\n" is used to keep the string one line.
+      let stdout .= line[stdout_start_posi:] .'\n'
+      let reading_stdout = 1
+    endif
+  endfor
+  
+  "" concatentate the stdout chops.
+  "" to combine, firstly insert an appropriate quote in the beginning to keep the pattern
+  ""     "'[''"]user-input[''"]\s*\(\\n\)\?\s*+\s*\(\\n\)\?\s*[''"]user-input[''"]
+  "" throughout the whole stdout output
+  let concat_stdout = substitute(stdout,
+        \ '^\zs\ze.\{-}\([''"]\)\s*\(\\n\)\?\s*+\s*\(\\n\)\?\s*\([''"]\).\{-}\4', '\1', '')
+  "" append an appropriate quote in the end to keep the pattern.
+  "" reverse the stdout string before applying a substitution to avoid exceeding the
+  "" memory limit and reduce runtime.
+  let concat_stdout = join(reverse(split(concat_stdout, '\zs')), '')
+  let concat_stdout = substitute(concat_stdout,
+        \ '^\zs\ze.\{-}\([''"]\)\s*\(n\\\)\?\s*+\s*\(n\\\)\?\s*\([''"]\).\{-}\4', '\1', '')
+  let concat_stdout = join(reverse(split(concat_stdout, '\zs')), '')
+  let added_extra_quotes = concat_stdout[0] != stdout[0]
+  "" remove the unwanted plus signs and quotes, replace '\n' with "\n"
+  let concat_stdout = substitute(concat_stdout,
+        \ '\([''"]\).\{-}\1\zs\s*\(\\n\)\?\s*+\s*\(\\n\)\?\s*\ze\([''"]\).\{-}\4', '', 'g')
+  let concat_stdout = substitute(concat_stdout, '[''"][''"]', '', 'g')
+  let concat_stdout = substitute(concat_stdout, '\\n', "\n    ", 'g')
+  if added_extra_quotes
+    let concat_stdout = concat_stdout[1:len(concat_stdout) - 2] "" remove the first and last quotes
+  endif
+  let concat_stdout = "\n    " .concat_stdout
+  
+  "" replace the stdout part with the above concatenated stdout string
+  let extracted_result[stdout_start_line_idx] = extracted_result[stdout_start_line_idx][:stdout_start_posi - 1] .concat_stdout
+  if stdout_end_line_idx > stdout_start_line_idx || (stdout_end_line_idx == -1 && stdout_start_line_idx != len(extracted_result) - 1)
+    echo 'a'
+    cal remove(extracted_result, stdout_start_line_idx + 1, stdout_end_line_idx == -1 ? len(extracted_result) - 1 : stdout_end_line_idx)
+    echo 'b'
+  endif
+
+  
   "" Display the result
   ec "\n"
   for line in extracted_result
