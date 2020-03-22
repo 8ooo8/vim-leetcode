@@ -114,23 +114,24 @@ fu! leetcode#utils#judgeCode#displayTestOrSubmitResult(result)
   let wrong_ans = (exists('ans') && exists('expected_ans') && ans != expected_ans)
 
   "" -- v0.4.1 patch --
-  "" concatenating the stdout output, indent input and stdoutput
+  "" concatenating the stdout output, indent testcase(s) and stdoutput
   let stdout = ''
   let reading_stdout = 0
   let [stdout_start_line_idx, stdout_end_line_idx, stdout_start_posi] = [-1, -1, -1]
   for line_idx in range(len(extracted_result))
     let line = extracted_result[line_idx]
     if reading_stdout
-      if (line =~ '✔' || line =~ '✘') && line =~ '\S\+\s*:'
+      if (line =~ '^\s*✔' || line =~ '^\s*✘') && line =~ '\S\+\s*:'
         "" end reading stdout
         let reading_stdout = 0 
         let stdout_end_line_idx = line - 1
+        break
       el
         "" concatenate the output; '\n' instead of "\n" is used to keep the string one line
         "" so that the linewise utility may still works great.
         let stdout .= line .'\n'
       endif
-    elseif !reading_stdout && (line =~ '✔' || line =~ '✘') && line =~? 'stdout'
+    elseif !reading_stdout && (line =~ '^\s*✔' || line =~ '^\s*✘') && line =~? 'stdout'
       "" start reading stdout
       let stdout_start_line_idx = line_idx
       let stdout_start_posi = matchend(line, ':\s*')
@@ -140,16 +141,16 @@ fu! leetcode#utils#judgeCode#displayTestOrSubmitResult(result)
       let reading_stdout = 1
     endif
   endfor
-  
+
   "" concatentate the stdout chops.
-  "" to combine, firstly insert an appropriate quote in the beginning to keep the pattern
-  ""     "'[''"]user-input[''"]\s*\(\\n\)\?\s*+\s*\(\\n\)\?\s*[''"]user-input[''"]
-  "" throughout the whole stdout output
+  "" to combine, firstly insert an appropriate quote in the beginning
+  "" and append an appropriate quote in the end to keep the pattern that
+  ""     \([''"]\)user-input\1\s*\(\\n\)\?\s*+\s*\(\\n\)\?\s*\([''"]\)user-input\2
+  "" throughout the whole stdout output string.
   let concat_stdout = substitute(stdout,
         \ '^\zs\ze.\{-}\([''"]\)\s*\(\\n\)\?\s*+\s*\(\\n\)\?\s*\([''"]\).\{-}\4', '\1', '')
-  "" append an appropriate quote in the end to keep the pattern.
-  "" reverse the stdout string before applying a substitution to avoid exceeding the
-  "" memory limit and reduce runtime.
+  "" reverse before substitute() to reduce the runtime and avoid exceeding the memory
+  "" limit (maxmempattern)
   let concat_stdout = join(reverse(split(concat_stdout, '\zs')), '')
   let concat_stdout = substitute(concat_stdout,
         \ '^\zs\ze.\{-}\([''"]\)\s*\(n\\\)\?\s*+\s*\(n\\\)\?\s*\([''"]\).\{-}\4', '\1', '')
@@ -161,19 +162,39 @@ fu! leetcode#utils#judgeCode#displayTestOrSubmitResult(result)
   let concat_stdout = substitute(concat_stdout, '[''"][''"]', '', 'g')
   let concat_stdout = substitute(concat_stdout, '\\n', "\n    ", 'g')
   if added_extra_quotes
-    let concat_stdout = concat_stdout[1:len(concat_stdout) - 2] "" remove the first and last quotes
+    let concat_stdout = concat_stdout[1:len(concat_stdout) - 2] "" remove the 1st and last quotes
   endif
   let concat_stdout = "\n    " .concat_stdout
-  
+
   "" replace the stdout part with the above concatenated stdout string
-  let extracted_result[stdout_start_line_idx] = extracted_result[stdout_start_line_idx][:stdout_start_posi - 1] .concat_stdout
-  if stdout_end_line_idx > stdout_start_line_idx || (stdout_end_line_idx == -1 && stdout_start_line_idx != len(extracted_result) - 1)
-    echo 'a'
-    cal remove(extracted_result, stdout_start_line_idx + 1, stdout_end_line_idx == -1 ? len(extracted_result) - 1 : stdout_end_line_idx)
-    echo 'b'
+  if [stdout_start_line_idx, stdout_end_line_idx] != [-1, -1] "" when stdout exists in the test or submit result
+    let extracted_result[stdout_start_line_idx] = extracted_result[stdout_start_line_idx][:stdout_start_posi - 1] .concat_stdout
+    let stdout_end_line_idx = stdout_end_line_idx == -1 ? len(extracted_result) - 1 : stdout_end_line_idx
+    if stdout_start_line_idx != stdout_end_line_idx
+      cal remove(extracted_result, stdout_start_line_idx + 1, stdout_end_line_idx)
+    endif
   endif
 
-  
+  "" indent the testcase(s)
+  let reading_testcases = 0
+  for line_idx in range(len(extracted_result))
+    let line = extracted_result[line_idx]
+    if reading_testcases
+      if (line =~ '^\s*✔' || line =~ '^\s*✘') && line =~ '\S\+\s*:'
+        "" end reading input
+        break
+      el
+        let extracted_result[line_idx] = '    ' .extracted_result[line_idx]
+      endif
+    elseif !reading_testcases && (line =~ '^\s*✔' || line =~ '^\s*✘')
+          \ && (line =~? 'input\%[s]' || line =~? 'test\%[ ]case\%[s]')
+      "" start reading input
+      let input_start_posi = matchend(line, ':\s*')
+      let extracted_result[line_idx] = line[:input_start_posi - 1] ."\n    " .line[input_start_posi:]
+      let reading_testcases = 1
+    endif
+  endfor
+
   "" Display the result
   ec "\n"
   for line in extracted_result
