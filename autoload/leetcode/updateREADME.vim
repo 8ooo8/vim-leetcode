@@ -84,8 +84,8 @@ fu! leetcode#updateREADME#updateREADME(...)
         cal insert(readme_content, s:formattedRow(row), table_top_line_num + row_idx)
       el
         cal insert(readme_content, s:formattedRow(row), table_top_line_num + row_idx)
+        let prev_Q = row['c1']
       endif
-      let prev_Q = row['c1']
     endfor
     cal map(readme_content, {key, val -> escape(val, '"')})
     cal system('echo "' .s:list2Str(readme_content) .'" > "' .readme_path .'"')
