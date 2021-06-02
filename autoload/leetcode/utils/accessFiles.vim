@@ -134,7 +134,8 @@ endfu
 fu! leetcode#utils#accessFiles#allCodeFiles(Q_fullname)
   let root_path = leetcode#utils#path#getRootDir()
   let code_dir_path = root_path .g:leetcode_path_delimit .a:Q_fullname
-  let all_code_filenames = split(globpath(fnameescape(code_dir_path), '*\.' .leetcode#lang#utils#getExt()), '\n')
+  let all_code_filenames = split(globpath(fnameescape(code_dir_path), '*'), '\n')
+  cal filter(all_code_filenames, 'v:val !~# "Q\.txt"')
   cal map(all_code_filenames, {key, val -> matchstr(val, g:leetcode_path_delimit .'\zs[^\' .g:leetcode_path_delimit .']*\ze$')})
   retu all_code_filenames
 endfu
