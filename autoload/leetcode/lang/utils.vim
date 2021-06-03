@@ -35,3 +35,7 @@ endfu
 fu! leetcode#lang#utils#getExt()
   retu execute('echon leetcode#lang#' .g:leetcode_lang .'#getExt()')
 endfu
+
+fu! leetcode#lang#utils#getAllExts()
+  return map(copy(s:langs), {i, val -> execute('echon leetcode#lang#' .val .'#getExt()')})
+endfu
