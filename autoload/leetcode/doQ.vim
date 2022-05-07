@@ -239,14 +239,14 @@ fu! s:getQFullNameFromLeetcodeServer(Q_ID_or_name)
   let Q = system('leetcode show "' .Q_ID_or_name .'"')
   let Q_in_list_form = split(Q, '\n')
   for line in Q_in_list_form
-    if line =~ '^\s*\[\d\+\][- \tA-Za-z0-9\[\]()]\+$'
+    if line =~ '^\s*\[\d\+\][- "' ."'" .'\tA-Za-z0-9\[\]()]\+$'
       let Q_fullname = trim(line)
       break
     endif
   endfor
-  if exists('Q_fullname') && (a:Q_ID_or_name !~ '\[\d\+\]\([ a-zA-Z0-9]\)\+' ||
+  if exists('Q_fullname') && (a:Q_ID_or_name !~ '\[\d\+\]\([ "' ."'" .'"a-zA-Z0-9]\)\+' ||
         \Q_fullname =~? escape(a:Q_ID_or_name, '[]'))
-    retu Q_fullname
+    retu substitute(Q_fullname, "'", '', 'g')
   el
     throw 'Error in retriving the question. Please make sure the question ID or name is correct.'
   en
@@ -265,7 +265,7 @@ fu! s:RemoveHTMLTagsInCurrentQFile()
   sil %sm@&nbsp;@ @ge
   sil %sm@&gt;@>@ge
   sil %sm@&lt;@<@ge
-  sil %sm@@@ge
+  sil %sm@@@ge
   sil %sm@&#39;@'@ge
   sil %sm@&le;@<=@ge
   sil %sm@&ge;@>=@ge
