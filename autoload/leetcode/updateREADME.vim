@@ -89,6 +89,7 @@ fu! leetcode#updateREADME#updateREADME(...)
     endfor
     cal map(readme_content, {key, val -> escape(val, '"')})
     cal system('echo "' .s:list2Str(readme_content) .'" > "' .readme_path .'"')
+    exe 'e ' .readme_path
   cat /.*/ | echoe '[' .g:leetcode_name .'] ' .v:exception | endt
 endfu
 
