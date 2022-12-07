@@ -7,8 +7,8 @@ fu! leetcode#updateREADME#updateREADME(...)
     
     "" Initialize the content of table to be put in README.md
     let content_of_table = []
-    cal add(content_of_table, {'c1': 'Question', 'c2':'Difficulty', 'c3':'Acceptance', 'c4': 'Solution', 'c5': 'Time', 'c6': 'Space', 'c7': 'Note'})
-    cal add(content_of_table, {'c1': '-', 'c2':'-', 'c3':'-', 'c4': '-', 'c5': '-', 'c6': '-', 'c7': '-'})
+    cal add(content_of_table, {'c1': 'Question', 'c2':'Difficulty', 'c3':'Acceptance', 'c4': 'Solution', 'c5': 'Time', 'c6': 'Space', 'c7': 'Note', 'c8': 'Last modified time'})
+    cal add(content_of_table, {'c1': '-', 'c2':'-', 'c3':'-', 'c4': '-', 'c5': '-', 'c6': '-', 'c7': '-', 'c8': '-'})
     let did_Q = leetcode#utils#accessFiles#allDidQ()
     for q in did_Q
       let url = s:getURL(substitute(q, '^\[\d\+\] ', '', ''))
@@ -19,7 +19,8 @@ fu! leetcode#updateREADME#updateREADME(...)
         let Q_file_content = system('cat "' .g:leetcode_root_dir .g:leetcode_path_delimit . q .'/Q.txt"')
         let difficulty = matchstr(Q_file_content, '\c\* *\zs\(hard\|medium\|easy\)')
         let acceptance = printf('%.1f', str2float(matchstr(Q_file_content, '\c\* *\(hard\|medium\|easy\) *(\zs[0-9\.]\+\ze%)'))) .'%'
-        cal add(content_of_table, {'c1': s:bindLinktoText(q, url), 'c2': difficulty, 'c3': acceptance, 'c4': s:bindLinktoText(c, q .g:leetcode_path_delimit .c), 'c5': '', 'c6': '', 'c7': ''})
+        let file_link = q .g:leetcode_path_delimit .c
+        cal add(content_of_table, {'c1': s:bindLinktoText(q, url), 'c2': difficulty, 'c3': acceptance, 'c4': s:bindLinktoText(c, file_link), 'c5': '', 'c6': '', 'c7': '', 'c8': getftime(leetcode#utils#path#getRootDir() .file_link)})
       endfor
     endfor
 
@@ -32,7 +33,7 @@ fu! leetcode#updateREADME#updateREADME(...)
     for i in range(len(content_of_table[0]) + 1)[1:]
       let table_top_line_content .= content_of_table[0]['c' .i] .'|'
     endfor
-    let table_top_line_num = match(readme_content, table_top_line_content)
+    let table_top_line_num = match(readme_content, table_top_line_content[:56]) "" [:56] for backward compatiblity
     if table_top_line_num == -1
       let old_table_exists = 0
       let table_top_line_num = len(readme_content)
@@ -51,7 +52,7 @@ fu! leetcode#updateREADME#updateREADME(...)
         for new_content_idx in range(len(content_of_table))[2:]
           if old_content_in_list[3] == content_of_table[new_content_idx]['c4']
             let new_content_c_num = 5
-            for old_content_chop in old_content_in_list[4:]
+            for old_content_chop in old_content_in_list[4:6]
               let content_of_table[new_content_idx]['c' .new_content_c_num] .= old_content_chop
               if empty(old_content_chop) ||  old_content_chop[len(old_content_chop) - 1] != '\'
                 let new_content_c_num += 1
@@ -71,19 +72,24 @@ fu! leetcode#updateREADME#updateREADME(...)
     endif
     let prev_Q = ''
     let tuples_of_table = content_of_table[2:]
-    cal sort(tuples_of_table, {i1, i2 -> 
-          \float2nr(ceil(str2float(i1['c3'][:len(i1['c3']-2)]) - str2float(i2['c3'][:len(i2['c3']-2)])))}) "" sort by acceptance rates
-    cal remove(content_of_table, 2, len(content_of_table) - 1)
-    cal extend(content_of_table, tuples_of_table)
-    for row_idx in range(len(content_of_table))
-      let row = content_of_table[row_idx]
+    if g:leetcode_table_of_finished_questions_sorted_by_acceptance_rate
+        cal sort(tuples_of_table, {i1, i2 -> 
+              \float2nr(ceil(str2float(i1['c3'][:len(i1['c3']-2)]) - str2float(i2['c3'][:len(i2['c3']-2)])))}) "" sort by acceptance rates
+      el
+        cal sort(tuples_of_table, {i1, i2 -> i2['c8'] - i1['c8']}) "" sort by last modified time
+    endif
+    cal insert(readme_content, s:formattedRow(content_of_table[0]), table_top_line_num)
+    cal insert(readme_content, s:formattedRow(content_of_table[1]), table_top_line_num + 1)
+    for row_idx in range(len(tuples_of_table))
+      let row = tuples_of_table[row_idx]
+      let row['c8'] = strftime('%Y/%m/%d %T', row['c8'])
       if prev_Q == row['c1']
         for i in range(4)[1:]
           let row['c' .i] = ''
         endfor
-        cal insert(readme_content, s:formattedRow(row), table_top_line_num + row_idx)
+        cal insert(readme_content, s:formattedRow(row), table_top_line_num + row_idx + 2)
       el
-        cal insert(readme_content, s:formattedRow(row), table_top_line_num + row_idx)
+        cal insert(readme_content, s:formattedRow(row), table_top_line_num + row_idx + 2)
         let prev_Q = row['c1']
       endif
     endfor
