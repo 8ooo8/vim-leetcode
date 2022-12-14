@@ -81,8 +81,8 @@ fu! leetcode#updateREADME#updateREADME(...)
     cal insert(readme_content, s:formattedRow(content_of_table[0]), table_top_line_num)
     cal insert(readme_content, s:formattedRow(content_of_table[1]), table_top_line_num + 1)
     for row_idx in range(len(tuples_of_table))
-      let row = tuples_of_table[row_idx]
-      let row['c8'] = strftime('%Y/%m/%d %T', row['c8'])
+      let row = copy(tuples_of_table[row_idx])
+      let row['c8'] = s:formattedTime(row['c8'])
       if prev_Q == row['c1']
         for i in range(4)[1:]
           let row['c' .i] = ''
@@ -96,6 +96,11 @@ fu! leetcode#updateREADME#updateREADME(...)
     cal map(readme_content, {key, val -> escape(val, '"')})
     cal system('echo "' .s:list2Str(readme_content) .'" > "' .readme_path .'"')
     exe 'e ' .readme_path
+
+    "" Move the cursor the 'Note' column of the tuple of the last did question
+    let keywords_of_last_added_tuple = substitute(s:formattedTime(max(map(tuples_of_table, {key, val -> val['c8']}))), '\ze/', '\', 'g')
+    sil keepj keepp call search('\ze|' .keywords_of_last_added_tuple)
+    startinsert
   cat /.*/ | echoe '[' .g:leetcode_name .'] ' .v:exception | endt
 endfu
 
@@ -107,6 +112,10 @@ endfu
 
 fu! s:bindLinktoText(text, link)
   retu '[' .escape(a:text, '[]') .'](<' .a:link .'>)'
+endfu
+
+fu! s:formattedTime(time_since_epoch)
+  return strftime('%Y/%m/%d %T', a:time_since_epoch)
 endfu
 
 fu! s:formattedRow(raw_row)

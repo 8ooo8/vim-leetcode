@@ -116,7 +116,7 @@ Plug '8ooo8/leetcode'
   ![Table of content in README.md][README-table-img]
 - The entries in the "Question" column are linked to the Leetcode official web pages which show the same questions; and the entries in the "Solution" column are linked to the corresponding solution files.
 - The content in the columns "Question", "Difficulty", "Acceptance" and "Solution" are automatically generated while the rest needs to be input manually.
-- The tuples are sorted by their acceptance rates.
+- The tuples are sorted by their acceptance rates or last modified time. Check [`g:leetcode_table_of_finished_questions_sorted_by_acceptance_rate`](#the-gleetcode_table_of_finished_questions_sorted_by_acceptance_rate-option).
 - Check this [example][vim-leetcode-example] for a clearer view of this command.
 
     
