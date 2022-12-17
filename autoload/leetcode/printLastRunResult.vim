@@ -6,6 +6,6 @@ fu! leetcode#printLastRunResult#printLastRunResult(...)
     endif
 
     let result = leetcode#utils#accessFiles#readLastRunResult()
-    cal leetcode#utils#judgeCode#displayTestOrSubmitResult(result)
+    cal leetcode#utils#judgeCode#displayTestOrSubmitResult(split(result, "\n"))
   cat /.*/ | echoe '[' .g:leetcode_name .'] ' .v:exception | endt
 endfu

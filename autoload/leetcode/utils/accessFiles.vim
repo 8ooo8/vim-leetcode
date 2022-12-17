@@ -28,6 +28,30 @@ fu! leetcode#utils#accessFiles#clearLastRunResultStorage()
   cal system(' > "' .g:leetcode_last_run_result_path .'"')
 endfu
 
+"" Last fail cases from `Lsumbit` {{{2
+fu! leetcode#utils#accessFiles#buildLastFailCasesDir()
+  cal leetcode#utils#accessFiles#buildDataContainer()
+  cal leetcode#utils#accessFiles#createDir(g:leetcode_last_fail_cases_dir_path)
+endfu
+
+fu! s:getLastFailCaseFilepath(Q_fullname)
+  retu g:leetcode_last_fail_cases_dir_path .g:leetcode_path_delimit .a:Q_fullname
+endfu
+
+fu! leetcode#utils#accessFiles#lastFailCaseExists(Q_fullname)
+  retu filereadable(s:getLastFailCaseFilepath(a:Q_fullname))
+endfu
+
+fu! leetcode#utils#accessFiles#readLastFailCase(Q_fullname)
+  retu leetcode#utils#accessFiles#readFile(s:getLastFailCaseFilepath(a:Q_fullname))
+endfu
+
+fu! leetcode#utils#accessFiles#saveLastFailCase(Q_fullname, fail_case)
+  cal leetcode#utils#accessFiles#buildLastFailCasesDir()
+  cal leetcode#utils#accessFiles#clearFile(s:getLastFailCaseFilepath(a:Q_fullname))
+  cal leetcode#utils#accessFiles#appendText(s:getLastFailCaseFilepath(a:Q_fullname), a:fail_case)
+endfu
+
 "" Last Did Code Files for Diff Qs {{{2
 fu! leetcode#utils#accessFiles#buildLastDidCodeFilesDir()
   cal leetcode#utils#accessFiles#buildDataContainer()
@@ -148,4 +172,33 @@ fu! leetcode#utils#accessFiles#allDidQ()
   cal map(all_did_Q, {key, val -> matchstr(val, g:leetcode_path_delimit
         \.'\zs[^\' .g:leetcode_path_delimit .']*\ze' .g:leetcode_path_delimit .'$')})
   retu all_did_Q
+endfu
+
+
+"" IO functions {{{1
+"" TODO: refactor to use below methods
+fu! leetcode#utils#accessFiles#createDir(dir_path)
+  if !isdirectory(a:dir_path)
+    cal system('mkdir -p "' . a:dir_path .'"')
+  endif
+endfu
+
+fu! leetcode#utils#accessFiles#createFile(file_path)
+  if !filereadable(a:file_path)
+    cal system('touch "' .a:file_path .'"')
+  endif
+endfu
+
+fu! leetcode#utils#accessFiles#appendText(file_path, text)
+  "" Append text in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
+  cal system("echo '" .a:text ."' >> '" .a:file_path ."'")
+endfu
+
+fu! leetcode#utils#accessFiles#readFile(file_path)
+  return substitute(system('cat "' .a:file_path .'"'), '\n$', '', '')
+endfu
+
+fu! leetcode#utils#accessFiles#clearFile(file_path)
+  "" clear in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
+  cal system(' > "' .a:file_path .'"')
 endfu

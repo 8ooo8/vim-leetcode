@@ -83,10 +83,12 @@ Plug '8ooo8/leetcode'
 ### The `Ltest` command
 
 ```
-:Ltest [Test-Case]
+:Ltest[!] [Test-Case]
 ```
 
-- **Test the solution file in the current window** with the `[Test-Case]`; with default test case if `[Test-Case]` omitted.
+- **`:Ltest` to test with the last failed testcase** in your previous test(s) / submission(s) for the current LeetCode question, and if there is no failed testcase before, test with the default testcase.
+- **`:Ltest <Test-Case>` to test with the \<Test-Case\>**.
+- **`:Lest!` to test with the default testcase**.
 - Before submitting the solution to test, the code inserted for syntax check by [`LdoQ`](#the-ldoq-command) is commented to avoid an influence to the test. Upon the finish of the test, the code is uncommented and the solution file is saved. Change list, jump list, search history and undo history are unpolluted. Hence, built-in mappings such as `g;`, `<C-O>` and `u` are not affected.
 - Use '\n' to separate the parameters, e.g. `:Ltest ParameterA\nParameterB`, e.g. `Ltest ""1010"\n"1011""`
 

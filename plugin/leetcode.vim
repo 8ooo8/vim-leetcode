@@ -41,7 +41,7 @@ cal leetcode#utils#path#init()
 "" API {{{1
 com! -nargs=* -complete=customlist,leetcode#doQ#completeCmdArgs LdoQ cal leetcode#doQ#doQ(<f-args>)
 com! -nargs=* LrenameCodeFile cal leetcode#renameCodeFile#renameCodeFile(<f-args>)
-com! -nargs=* Ltest cal leetcode#testCode#testCode(<q-args>)
+com! -nargs=* -bang Ltest cal leetcode#testCode#testCode(<bang>0, <q-args>)
 com! -nargs=* Lsubmit cal leetcode#submitCode#submitCode(<f-args>)
 com! -nargs=* LprintLastRunResult cal leetcode#printLastRunResult#printLastRunResult(<f-args>)
 com! -nargs=* LupdateREADME cal leetcode#updateREADME#updateREADME(<f-args>)
