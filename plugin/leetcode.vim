@@ -1,4 +1,4 @@
-"" Version: 0.5.0
+"" Version: 0.6.0
 "" Description:
 "" This is a leetcode question and code file manager. It allows a quick 
 "" download, load, test and submission of leetcode questions. The file 
