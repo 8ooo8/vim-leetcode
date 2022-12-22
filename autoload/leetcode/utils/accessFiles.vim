@@ -191,7 +191,7 @@ endfu
 
 fu! leetcode#utils#accessFiles#appendText(file_path, text)
   "" Append text in this way but not in a Vim way to avoid pollution to buffer, jumplist, etc
-  cal system("echo '" .a:text ."' >> '" .a:file_path ."'")
+  cal system("echo '" .substitute(a:text, "'", "'\"'\"'", 'g') ."' >> '" .a:file_path ."'")
 endfu
 
 fu! leetcode#utils#accessFiles#readFile(file_path)
