@@ -22,7 +22,8 @@ fu! leetcode#utils#judgeCode#testOrSubmit(leetcode_cmd, Q_fullname)
   try 
     echoh None | ec '[' .g:leetcode_name .'] Loading ...'
     let raw_test_result = system(a:leetcode_cmd)
-    let test_result = s:extractTestOrSumbitResult(raw_test_result)
+    let test_result = s:removeImproperPlusSignInTestResult(raw_test_result)
+    let test_result = s:extractTestOrSumbitResult(test_result)
     cal leetcode#utils#accessFiles#clearLastRunResultStorage()
     cal leetcode#utils#accessFiles#appendTextToLastRunResultStorage(join(test_result, "\n"))
     cal leetcode#lang#utils#uncommentDependencies() | sil w! | let commented = 0
@@ -223,8 +224,8 @@ fu! leetcode#utils#judgeCode#displayTestOrSubmitResult(test_result)
   endfor
 endfu
 
-fu! s:extractTestOrSumbitResult(raw_result)
-  let result_in_list_form = split(a:raw_result, '\n')
+fu! s:extractTestOrSumbitResult(test_result)
+  let result_in_list_form = split(a:test_result, '\n')
   let result_start_idx = 0
   let idx = 0
   for r in result_in_list_form
@@ -234,6 +235,10 @@ fu! s:extractTestOrSumbitResult(raw_result)
     let idx += 1
   endfor
   retu result_in_list_form[result_start_idx:]
+endfu
+
+fu! s:removeImproperPlusSignInTestResult(test_result)
+  retu substitute(a:test_result, "'\\_s\\++\\_s\\+'", '', 'g')
 endfu
 
 fu! s:saveFailCase(Q_fullname, test_result)
