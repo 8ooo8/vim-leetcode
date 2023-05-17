@@ -67,7 +67,7 @@ fu! leetcode#lang#java#foldDependencies()
     en
     retu 1
   cat /E486/
-    throw 'Error in locating the dependencies to fold'
+    echom '[' .g:leetcode_name .'] Error in locating the dependencies to fold'
   endt
 endfu
 
@@ -81,11 +81,19 @@ fu! leetcode#lang#java#goToWhereCodeBegins()
 endfu
 
 fu! leetcode#lang#java#commentDependencies()
-  exe 'keepj keepp sil %sm@\C^\(.*' .s:dependencies[1] .'.*\)$@//\1@'
+  try
+    exe 'keepj keepp sil %sm@\C^\(.*' .s:dependencies[1] .'.*\)$@//\1@'
+  cat /E486/
+    echom '[' .g:leetcode_name .'] Error in locating the dependencies to comment'
+  endt
 endfu
 
 fu! leetcode#lang#java#uncommentDependencies()
-  exe 'keepj keepp sil %sm@\C\s*\zs/*\ze.*' .s:dependencies[1] .'.*$@@'
+  try
+    exe 'keepj keepp sil %sm@\C\s*\zs/*\ze.*' .s:dependencies[1] .'.*$@@'
+  cat /E486/
+    echom '[' .g:leetcode_name .'] Error in locating the dependencies to uncomment'
+  endt
 endfu
 
 fu! leetcode#lang#java#getExt()
