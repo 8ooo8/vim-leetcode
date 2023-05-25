@@ -49,7 +49,7 @@ fu! leetcode#lang#java#addDependencies()
   setl ul=-1
   keepj cal append(line('.'), s:dependencies)
   let custom_depend = leetcode#lang#java#getCustomDependencies()
-  let custom_depend_begin_line = search(s:dependencies[len(s:dependencies) - 3])
+  let custom_depend_begin_line = search(s:dependencies[len(s:dependencies) - 2])
   keepj cal append(custom_depend_begin_line, custom_depend)
   exe 'setlocal ul='.old_ul
   retu 1
