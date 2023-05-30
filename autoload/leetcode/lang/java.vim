@@ -6,7 +6,7 @@ let s:dependencies = [
       \'import java.util.stream.*;',
       \'import java.util.Map.Entry;',
       \'import java.lang.*;', '']
-let s:depend_location = '/\mclass\s\+solution\c\s\+{/-' 
+let s:depend_location = '/\mclass\s\+solution\c\s\+{\|class\s\+\a\+\s\+{/-' 
 let s:code_begin_location = '?\m)\s*{?+'
 
 "" TODO: refactor to reuse the duplicated logic
